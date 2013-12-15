@@ -3,7 +3,7 @@ CC="ccache gcc"
 all: build install
 
 test:
-	nosetests tests.py
+	nosetests tests
 
 build:
 	python setup.py build

@@ -10,6 +10,32 @@ import os
 from setuptools import find_packages
 from distutils.core import setup, Extension
 
+
+def parallelCCompile(self, sources, output_dir=None, macros=None,
+                     include_dirs=None, debug=0, extra_preargs=None,
+                     extra_postargs=None, depends=None):
+    '''Hack for parallel compilation in distutils'''
+    # those lines are copied from distutils.ccompiler.CCompiler directly
+    macros, objects, extra_postargs, pp_opts, build = \
+        self._setup_compile(output_dir, macros, include_dirs, sources, depends,
+                            extra_postargs)
+    cc_args = self._get_cc_args(pp_opts, debug, extra_preargs)
+    # parallel code
+    N = 8  # number of parallel compilations
+    import multiprocessing.pool
+
+    def _single_compile(obj):
+        try:
+            src, ext = build[obj]
+        except KeyError:
+            return
+        self._compile(obj, src, ext, cc_args, extra_postargs, pp_opts)
+    # convert to list, imap is evaluated on-demand
+    list(multiprocessing.pool.ThreadPool(N).imap(_single_compile, objects))
+    return objects
+import distutils.ccompiler
+distutils.ccompiler.CCompiler.compile = parallelCCompile
+
 requires = []
 
 
@@ -26,10 +52,8 @@ def find_sources(dirs):
             yield f
 
 src_dirs = (
+    'bullet/src/boost',
     'bullet/src/LinearMath',
-    'bullet/src/BulletDynamics',
-    'bullet/src/BullletCollision',
-    'bullet/src/vectormath',
 )
 
 macros = [
@@ -41,6 +65,7 @@ modules = [
     Extension(str('bullet'),  # hack for distutils string param in Extension
               sources=[s for s in find_sources(src_dirs)],
               define_macros=macros,
+              libraries=['boost_python'],
               include_dirs=['bullet/src'])
 ]
 

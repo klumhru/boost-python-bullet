@@ -42,5 +42,40 @@ class TestQuaternion(unittest.TestCase):
                         bullet.btRadians(90))
         self.assertEqual(self.q, q1)
 
+    def test_add(self):
+        self.q = bullet.btQuaternion(0, 0, 0, 1)
+        q1 = bullet.btQuaternion(0, 0, 0, 1)
+        self.q += q1
+        self.assertEqual(self.q, bullet.btQuaternion(0, 0, 0, 2))
+
+    def test_sub(self):
+        self.q = bullet.btQuaternion(0, 0, 0, 1)
+        q1 = bullet.btQuaternion(0, 0, 0, 1)
+        self.q -= q1
+        self.assertEqual(self.q, bullet.btQuaternion(0, 0, 0, 0))
+
+    def test_mul(self):
+        self.q = bullet.btQuaternion(0, 0, 0, 1)
+        self.q *= 10.0
+        self.assertEqual(self.q, bullet.btQuaternion(0, 0, 0, 10.0))
+        self.q *= bullet.btQuaternion(0, 0, 0, 0.5)
+        self.assertEqual(self.q, bullet.btQuaternion(0, 0, 0, 5.0))
+
+    def test_dot(self):
+        self.q = bullet.btQuaternion(0, 0, 20, 0)
+        self.assertEqual(self.q.dot(bullet.btQuaternion(0, 0, 10, 0)),
+                         200.0)
+
+    def test_normalize(self):
+        self.q = bullet.btQuaternion(0, 10, 20, 0)
+        q1 = self.q.normalize()
+        self.assertEqual(q1.length, q1.length2)
+        self.assertAlmostEqual(self.q.length, 1)
+
+    def test_length(self):
+        self.q = bullet.btQuaternion(0, 0, 2, 0)
+        self.assertEqual(self.q.length, 2)
+        self.assertEqual(self.q.length2, 4)
+
     def tearDown(self):
         del self.q

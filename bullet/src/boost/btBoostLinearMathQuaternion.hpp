@@ -17,7 +17,7 @@ ostream& operator<<(ostream& os, const btQuaternion q)
 
 void defineQuaternion()
 {
-    class_<btQuaternion>("btQuaternion")
+    class_<btQuaternion, bases<btQuadWord> >("btQuaternion")
         // Constructors
         .def(init<btQuaternion>())
         .def(init<const btScalar&, const btScalar&, const btScalar&, const btScalar&>())
@@ -26,12 +26,22 @@ void defineQuaternion()
         // Operators
         .def(self == other<btQuaternion>())
         .def(self != other<btQuaternion>())
+        .def(self += other<btQuaternion>())
+        .def(self -= other<btQuaternion>())
+        .def(self *= other<btScalar>())
+        .def(self *= other<btQuaternion>())
         .def(self_ns::repr(self_ns::self))
         .def(self_ns::str(self_ns::self))
         // Member functions
         .def("set_rotation", &btQuaternion::setRotation)
         .def("set_euler", &btQuaternion::setEuler)
         .def("set_euler_zyx", &btQuaternion::setEulerZYX)
+        .def("dot", &btQuaternion::dot)
+        .def_readonly("length", &btQuaternion::length)
+        .def_readonly("length2", &btQuaternion::length2)
+        .def("normalize", &btQuaternion::normalize,
+             return_value_policy<copy_non_const_reference>())
+
         ;
 }
 

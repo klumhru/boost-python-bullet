@@ -29,6 +29,7 @@ src_dirs = (
     'bullet/src/LinearMath',
     'bullet/src/BulletDynamics',
     'bullet/src/BullletCollision',
+    'bullet/src/vectormath',
 )
 
 macros = [

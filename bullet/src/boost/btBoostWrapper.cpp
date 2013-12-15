@@ -2,7 +2,7 @@
 #define BT_BOOST_WRAPPER_HW
 
 #include <boost/python.hpp>
-#include "btBoostDynamics.hpp"
+#include "btBoostLinearMath.hpp"
 
 
 const char* hello_world()
@@ -17,7 +17,7 @@ BOOST_PYTHON_MODULE(bullet)
 
     def("hello_world", &hello_world);
 
-    defineDynamics();
+    defineLinearMath();
 }
 
 #endif // BT_BOOST_WRAPPER_HW

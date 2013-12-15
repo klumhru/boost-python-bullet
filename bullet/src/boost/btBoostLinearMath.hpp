@@ -3,10 +3,12 @@
 #define _btBoostDynamics_hpp
 
 #include <boost/python.hpp>
-#include "btBoostDynamicsVector3.hpp"
+#include "btBoostLinearMathScalar.hpp"
+#include "btBoostLinearMathVector3.hpp"
 
-void defineDynamics()
+void defineLinearMath()
 {
+    defineScalar();
     defineVector3();
 }
 

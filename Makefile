@@ -1,5 +1,7 @@
 CC="ccache gcc"
 
+all: build install
+
 test:
 	nosetests tests.py
 

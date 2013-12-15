@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-tests
+test_vector3
 """
 from __future__ import unicode_literals, print_function, absolute_import
 
@@ -9,7 +9,6 @@ import unittest
 import math
 
 import bullet
-
 
 class TestVector3(unittest.TestCase):
     def setUp(self):
@@ -197,3 +196,4 @@ class TestVector3(unittest.TestCase):
 
     def tearDown(self):
         del self.vec
+

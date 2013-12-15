@@ -13,3 +13,5 @@ force-build:
 
 install:
 	python setup.py install
+
+dev: force-build install test

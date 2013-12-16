@@ -10,3 +10,13 @@ setRotation -> set_rotation
 setValue -> set_value
 
 etc...
+
+### implemented classes
+
+Only a limited subset of the bullet library is wrapped so far. Work is ongoing.
+
+Current classes that are fully wrapped:
+
+* btQuadWord
+* btQuaternion
+* btVector3 (btVector4)

@@ -15,6 +15,7 @@ ostream& operator<<(ostream& os, const btQuaternion q)
     return os;
 }
 
+
 void defineQuaternion()
 {
     class_<btQuaternion, bases<btQuadWord> >("btQuaternion")
@@ -23,6 +24,9 @@ void defineQuaternion()
         .def(init<const btScalar&, const btScalar&, const btScalar&, const btScalar&>())
         .def(init<const btVector3&, const btScalar&>())
         .def(init<const btScalar&, const btScalar&, const btScalar&>())
+        // String ops
+        .def(self_ns::repr(self_ns::self))
+        .def(self_ns::str(self_ns::self))
         // Operators
         .def(self == other<btQuaternion>())
         .def(self != other<btQuaternion>())
@@ -30,8 +34,12 @@ void defineQuaternion()
         .def(self -= other<btQuaternion>())
         .def(self *= other<btScalar>())
         .def(self *= other<btQuaternion>())
-        .def(self_ns::repr(self_ns::self))
-        .def(self_ns::str(self_ns::self))
+        .def(self * other<btScalar>())
+        .def(self / other<btScalar>())
+        .def(self /= other<btScalar>())
+        .def(self + other<btQuaternion>())
+        .def(self - other<btQuaternion>())
+        .def(-self)
         // Member functions
         .def("set_rotation", &btQuaternion::setRotation)
         .def("set_euler", &btQuaternion::setEuler)
@@ -41,7 +49,21 @@ void defineQuaternion()
         .def_readonly("length2", &btQuaternion::length2)
         .def("normalize", &btQuaternion::normalize,
              return_value_policy<copy_non_const_reference>())
-
+        .def("normalized", &btQuaternion::normalized)
+        .def("angle", &btQuaternion::angle)
+        .def("angle_shortest_path", &btQuaternion::angleShortestPath)
+        .def("get_angle", &btQuaternion::getAngle)
+        .def("get_angle_shortest_path", &btQuaternion::getAngleShortestPath)
+        .def("get_axis", &btQuaternion::getAxis)
+        .def("inverse", &btQuaternion::inverse)
+        .def("farthest", &btQuaternion::farthest)
+        .def("nearest", &btQuaternion::nearest)
+        .def("slerp", &btQuaternion::slerp)
+        .def("get_identity", &btQuaternion::getIdentity,
+             return_value_policy<copy_const_reference>())
+        .staticmethod("get_identity")
+        .add_static_property("identity", make_function(&btQuaternion::getIdentity,
+                             return_value_policy<copy_const_reference>()))
         ;
 }
 

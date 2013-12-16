@@ -58,7 +58,7 @@ void defineMatrix3x3()
              return_value_policy<copy_const_reference>())
         .def("get_column", &btMatrix3x3::getColumn,
              return_value_policy<return_by_value>())
-
+        // TODO: add identity property
         ;
 }
 

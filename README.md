@@ -14,7 +14,7 @@ etc...
 Also some methods have been changed to properties, as in btVector3.length
 
 Some methods have twins that have more descriptive names: btVector3.length_sqr
-exists along with btVector3.length which is a property instead of a method as in
+exists along with btVector3.length2 which is a property instead of a method as in
 C++
 
 ### implemented classes

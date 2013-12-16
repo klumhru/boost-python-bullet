@@ -45,6 +45,7 @@ Current classes that are fully wrapped:
 
 * btQuadWord
 * btQuaternion
-* btVector3 (btVector4)
+* btVector3 (not btVector4)
+* btMatrix3x3
 
 Internals used to data transfer and internal logic are not exposed. Common collection implementations of btAlignedObjectArray will be implemented for the exposed classes where applicable, e.g. btVector3, but not btDynamicsWorld.

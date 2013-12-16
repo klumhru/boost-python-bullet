@@ -53,6 +53,8 @@ class TestMatrix3x3(unittest.TestCase):
         self.a = bullet.btMatrix3x3(*v)
         self.b = bullet.btMatrix3x3(*tuple(reversed(v)))
         self.assertFalse(self.a == self.b)
+        self.c = bullet.btMatrix3x3(self.a)
+        self.assertEqual(self.a, self.c)
 
     def test_add(self):
         self.a = bullet.btMatrix3x3(*self.v1)

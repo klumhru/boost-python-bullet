@@ -9,6 +9,7 @@
 #include "btBoostLinearMathQuaternion.hpp"
 #include "btBoostLinearMathMatrix3x3.hpp"
 #include "btBoostLinearMathTransform.hpp"
+#include "btBoostLinearMathMotionState.hpp"
 
 // TODO: implement btAlignedObjectArray somewhere, it's needed to pass arrays
 //       back and forth
@@ -21,6 +22,7 @@ void defineLinearMath()
     defineQuaternion();
     defineMatrix3x3();
     defineTransform();
+    defineMotionState();
 }
 
 #endif // _btBoostDynamics_hpp

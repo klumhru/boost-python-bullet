@@ -1,4 +1,4 @@
-boost-python-bullet
+boost-python-bullet - Work in Progress!
 ===================
 This is a thin boost wrapper on top of Bullet Physics SDK (http://bulletphysics.org)
 
@@ -47,5 +47,7 @@ Current classes that are fully wrapped:
 * btQuaternion
 * btVector3 (not btVector4)
 * btMatrix3x3
+* btMotionState / btDefaultMotionState
+*  Note: check linear_math_tests/test_motionstate.py for how to handle inheritance of btMotionState and implementing the virtual callback methods.
 
 Internals used to data transfer and internal logic are not exposed. Common collection implementations of btAlignedObjectArray will be implemented for the exposed classes where applicable, e.g. btVector3, but not btDynamicsWorld.

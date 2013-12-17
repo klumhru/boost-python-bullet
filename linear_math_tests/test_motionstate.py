@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-test_linearmath.test_motionstate
+linear_math_tests.test_motionstate
 """
 from __future__ import unicode_literals, print_function, absolute_import
 
@@ -13,13 +13,14 @@ import bullet
 
 class MyMotionState(bullet.btMotionState):
     def __init__(self):
-        self.world_transform = bullet.btTransform.identity
+        self.transform = bullet.btTransform.identity
 
-    def get_world_transform(self):
-        return self.world_transform
+    def setWorldTransform(self, t):
+        self.transform = t
 
-    def set_world_transform(self, t):
-        self.world_transform = t
+    def getWorldTransform(self, t):
+        t.set_basis(self.transform.basis)
+        t.set_origin(self.transform.origin)
 
 
 class TestMotionState(unittest.TestCase):
@@ -34,12 +35,18 @@ class TestMotionState(unittest.TestCase):
 
         self.m = MyMotionState()
 
-    def test_mystate(self):
-        t = bullet.btTransform(bullet.btQuaternion.identity,
-                               bullet.btVector3(0, 2, 0))
+    def test_virtual(self):
+        self.m = bullet.btMotionState()
+        t1 = bullet.btTransform()
+        self.assertRaises(RuntimeError, self.m.getWorldTransform, t1)
+
+    def test_implemented(self):
         self.m = MyMotionState()
-        self.m.set_world_transform(t)
-        self.assertEqual(self.m.get_world_transform(), t)
+        t1 = bullet.btTransform(bullet.btQuaternion.identity,
+                                bullet.btVector3(0, 10, 0))
+        print('t1', t1)
+        self.m.getWorldTransform(t1)
+        self.assertEqual(t1, bullet.btTransform.identity)
 
     def tearDown(self):
         del self.m

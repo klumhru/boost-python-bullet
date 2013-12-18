@@ -507,12 +507,15 @@ protected:
 		otherArray.copy(0, otherSize, m_data);
 	}
 	// Added to support boost indexing suite
+	// TODO: remove these and add them to the proxy/indexing_suite
+	// 		 classes directly
 	typedef T value_type;
 	typedef int size_type;
 	typedef int index_type;
 	typedef int difference_type;
   	typedef T* iterator;
- 	// Iterator support.
+ 	// Iterator support - indexing_suite really needs this... sad and intrusive
+ 	// but can't be avoided for now
 	iterator begin()               { return m_data; }
 	iterator end()                 { return m_data + m_size; }
 };

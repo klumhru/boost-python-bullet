@@ -30,6 +30,20 @@ class ClassTestName(unittest.TestCase):
 
         self.assertRaises(RuntimeError, _slice)
 
+    def test_copy_ctor(self):
+        self.c = bullet.btVector3Array(self.a)
+        self.assertEqual(self.a[1], self.c[1])
+
+    def test_search(self):
+        self.assertTrue(bullet.btVector3(1, 2, 3) in self.a)
+
+    def test_del(self):
+        del self.a[0]
+        self.assertEqual(len(self.a), 9)
+
+    def test_len(self):
+        self.assertEqual(len(self.a), 10)
+
     def tearDown(self):
         del self.a
         del self.b

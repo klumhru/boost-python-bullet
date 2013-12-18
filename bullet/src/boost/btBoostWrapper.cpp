@@ -1,6 +1,9 @@
 #ifndef BT_BOOST_WRAPPER_HW
 #define BT_BOOST_WRAPPER_HW
 
+#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma GCC diagnostic ignored "-Wreorder"
+
 #include <boost/python.hpp>
 #include "btBoostLinearMath.hpp"
 

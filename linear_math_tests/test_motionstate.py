@@ -19,6 +19,8 @@ class MyMotionState(bullet.btMotionState):
         self.transform = t
 
     def getWorldTransform(self, t):
+        # Assign basis and origin as theres no way to assign by reference
+        # as intended in the native method
         t.set_basis(self.transform.basis)
         t.set_origin(self.transform.origin)
 

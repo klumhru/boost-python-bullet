@@ -52,5 +52,7 @@ Current classes that are fully wrapped:
 * btAlignedObjectArray - preliminary support
   * This class is meant for general data passing to and from the library and not for use by the developer. If you need methods exposed feel free to submit a pull request.
   * Many internal operations are not supported such as sorts and such. SDK internal callers usually call for sorting when they need it.
+  * TODO: Add constructor from python list
+  * TODO: Add more implementations - probably as I find them used in the libs
 
 Internals used to data transfer and internal logic are not exposed. Common collection implementations of btAlignedObjectArray will be implemented for the exposed classes where applicable, e.g. btVector3, but not btDynamicsWorld.

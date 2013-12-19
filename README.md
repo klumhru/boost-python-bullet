@@ -45,6 +45,11 @@ Current classes that are fully wrapped:
 
 * btQuadWord
 * btQuaternion
+* btTransform
+* btTransformUtil
+  * Note that some methods that take primitive values by reference return those values instead, as primitivees (e.g. float, int) are immutable in python. The affected methods are listed here:
+    * calculate_diff_axis_angle_quaternion (btTransformUtil::calculateDiffAxisAngleQuaternion)
+    * calculate_diff_axis_angle (btTransformUtil::calculateDiffAxisAngle)
 * btVector3 (not btVector4)
 * btMatrix3x3
 * btMotionState / btDefaultMotionState
@@ -54,5 +59,6 @@ Current classes that are fully wrapped:
   * Many internal operations are not supported such as sorts and such. SDK internal callers usually call for sorting when they need it.
   * TODO: Add constructor from python list
   * TODO: Add more implementations - probably as I find them used in the libs
+
 
 Internals used to data transfer and internal logic are not exposed. Common collection implementations of btAlignedObjectArray will be implemented for the exposed classes where applicable, e.g. btVector3, but not btDynamicsWorld.

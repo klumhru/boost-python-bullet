@@ -43,6 +43,7 @@ void defineQuaternion()
         // Member functions
         .def("set_rotation", &btQuaternion::setRotation)
         .def("set_euler", &btQuaternion::setEuler)
+        // TODO: Add set_euler taking 3 scalar params
         .def("set_euler_zyx", &btQuaternion::setEulerZYX)
         .def("dot", &btQuaternion::dot)
         .def_readonly("length", &btQuaternion::length)

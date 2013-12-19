@@ -20,6 +20,8 @@ btVector3 abs(const btVector3& v)
     return v.absolute();
 }
 
+// TODO: Define static methods for the 6 directional axes
+
 void defineVector3()
 {
     class_<btVector3>("btVector3",

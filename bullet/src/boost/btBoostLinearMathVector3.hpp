@@ -43,6 +43,7 @@ void defineVector3()
         .def(self_ns::str(self_ns::self))
         .def(self_ns::repr(self_ns::self))
         // Operators
+        // Add indexing operators
         .def(self + other<btVector3>())
         .def(self += other<btVector3>())
         .def(self - other<btVector3>())

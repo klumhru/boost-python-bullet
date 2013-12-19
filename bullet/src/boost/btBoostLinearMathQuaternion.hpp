@@ -28,6 +28,7 @@ void defineQuaternion()
         .def(self_ns::repr(self_ns::self))
         .def(self_ns::str(self_ns::self))
         // Operators
+        // TODO: Add indexing operators
         .def(self == other<btQuaternion>())
         .def(self != other<btQuaternion>())
         .def(self += other<btQuaternion>())

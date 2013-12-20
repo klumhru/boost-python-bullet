@@ -15,4 +15,7 @@ force-build:
 install:
 	python setup.py install
 
-dev: force-build install test
+dev: build-mp install test
+
+build-mp:
+	python setup.py build --force -j

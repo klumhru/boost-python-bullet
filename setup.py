@@ -7,6 +7,7 @@ This is the setup file for the boost python thin wrapper for the
 Bullet Physics SDK (see: http://bulletphysics.org/)
 """
 import os
+import sys
 from setuptools import find_packages
 from distutils.core import setup, Extension
 
@@ -34,7 +35,9 @@ def parallelCCompile(self, sources, output_dir=None, macros=None,
     list(multiprocessing.pool.ThreadPool(N).imap(_single_compile, objects))
     return objects
 import distutils.ccompiler
-distutils.ccompiler.CCompiler.compile = parallelCCompile
+if '-j' in sys.argv:
+    sys.argv.remove('-j')
+    distutils.ccompiler.CCompiler.compile = parallelCCompile
 
 requires = []
 
@@ -52,8 +55,14 @@ def find_sources(dirs):
             yield f
 
 src_dirs = (
-    'bullet/src/boost',
     'bullet/src/LinearMath',
+    'bullet/src/BulletDynamics',
+    'bullet/src/BulletCollision',
+    'bullet/src/btBoost',
+)
+
+include_dirs = (
+    'bullet/src',
 )
 
 macros = [
@@ -66,7 +75,8 @@ modules = [
               sources=[s for s in find_sources(src_dirs)],
               define_macros=macros,
               libraries=['boost_python'],
-              include_dirs=['bullet/src'])
+              extra_compile_args=['-w'],
+              include_dirs=include_dirs)
 ]
 
 setup(
@@ -79,7 +89,7 @@ setup(
     description=__doc__,
     include_package_data=True,
     classifiers=[
-        "Development Status :: 5 - Alpha",
+        "Development Status :: 1 - Alpha",
         "Intended Audience :: Developers",
         "Licence :: MIT",
         "Operating System :: OS Independent",

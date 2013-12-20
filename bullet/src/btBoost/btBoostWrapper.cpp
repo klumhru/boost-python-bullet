@@ -1,26 +1,20 @@
-#ifndef BT_BOOST_WRAPPER_HW
-#define BT_BOOST_WRAPPER_HW
+// File: btBoostWrapper.cpp
+#ifndef _btBoostWrapper_cpp
+#define _btBoostWrapper_cpp
 
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #pragma GCC diagnostic ignored "-Wreorder"
 
 #include <boost/python.hpp>
-#include "btBoostLinearMath.hpp"
+#include <btBoost/btBoostLinearMath.hpp>
+#include <btBoost/btBoostDynamics.hpp>
 
-
-const char* hello_world()
-{
-    return "Hello world";
-}
-
+using namespace boost::python;
 
 BOOST_PYTHON_MODULE(bullet)
 {
-    using namespace boost::python;
-
-    def("hello_world", &hello_world);
-
     defineLinearMath();
+    defineDynamics();
 }
 
-#endif // BT_BOOST_WRAPPER_HW
+#endif // _btBoostWrapper_cpp

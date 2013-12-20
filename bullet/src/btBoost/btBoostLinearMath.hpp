@@ -1,8 +1,7 @@
-// File: btBoostDynamics.hpp
-#ifndef _btBoostDynamics_hpp
-#define _btBoostDynamics_hpp
+// File: btBoostLinearMath.hpp
+#ifndef _btBoostLinearMath_hpp
+#define _btBoostLinearMath_hpp
 
-#include <boost/python.hpp>
 #include "btBoostLinearMathScalar.hpp"
 #include "btBoostLinearMathVector3.hpp"
 #include "btBoostLinearMathQuadWord.hpp"
@@ -12,9 +11,6 @@
 #include "btBoostLinearMathTransformUtil.hpp"
 #include "btBoostLinearMathMotionState.hpp"
 #include "btBoostLinearMathAlignedObjectArray.hpp"
-
-// TODO: implement btAlignedObjectArray somewhere, it's needed to pass arrays
-//       back and forth
 
 void defineLinearMath()
 {
@@ -29,4 +25,4 @@ void defineLinearMath()
     defineTransformUtil();
 }
 
-#endif // _btBoostDynamics_hpp
+#endif // _btBoostLinearMath_hpp

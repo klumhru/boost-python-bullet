@@ -2,6 +2,14 @@ boost-python-bullet - Work in Progress!
 ===================
 This is a thin boost wrapper on top of Bullet Physics SDK (http://bulletphysics.org)
 
+Feel free to contribute pull requests or post issues for discussion. Issues asking for ETAs on components will be closed without answers. 
+
+Unittests are mandatory for all pull requests. See the provided tests for reference. If you want to use a different test framework, it must be supported by nose. Unittests for the Bullet SDK itself are outside the scope of the project.
+
+Also note the diferrences from reference in Bullet (see below), and calling conventions for pass-by-reference methods with primitive parameters (str, int, float, etc).
+
+Also note that some constructors that take pointer parameters are implemented using factory methods, e.g. btDiscreteDynamicsWorld.
+
 # Installation
 
 ## Dependencies
@@ -10,7 +18,7 @@ This library requires the boost libraries to be installed and the headers and sh
 
 It is recommended that you run the library from a virtualenv but a local installation should also work just fine.
 
-The library has only been built and tested on Linux (Ubuntu 12.04, 13.04, CentOS 5.1, 6.0)
+The library has been built and tested on Linux (Ubuntu 12.04, 13.04, CentOS 5.1, 6.0). Windows and OSX builds should not be terribly problematic, but I won't ever support them myself.
 
 ## Setup
 
@@ -67,4 +75,6 @@ Current classes that are fully wrapped (and tested):
   * The default collision configuration
   * Includes btDefaultCollisionConstructionInfo used by its constructor
 
-Internals used for data transfer and internal logic are not exposed. Common collection implementations of btAlignedObjectArray will be implemented for the exposed classes where applicable, e.g. btVector3, but not btDynamicsWorld.
+Bullet internals
+====
+Internals used for data transfer and internal logic are not exposed. Common collection implementations of btAlignedObjectArray will be implemented for the exposed classes where applicable, e.g. btVector3, but not btDynamicsWorld. I you need something from the internals of Bullet, feel free to submit a pull request. Note that only requests with full tests will be merged.

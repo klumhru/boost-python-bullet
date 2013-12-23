@@ -41,7 +41,7 @@ The best way to study the use cases of the library is to read the (extensive) un
 
 Only a limited subset of the bullet library is wrapped so far. Work is ongoing.
 
-Current classes that are fully wrapped:
+Current classes that are fully wrapped (and tested):
 
 * btQuadWord
 * btQuaternion

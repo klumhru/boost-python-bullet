@@ -5,12 +5,14 @@
 #include "btBoostDynamicsDbvtBroadphase.hpp"
 #include "btBoostDynamicsDefaultCollisionConfiguration.hpp"
 #include "btBoostDynamicsCollisionDispatcher.hpp"
+#include "btBoostDynamicsSequentialImpulseConstraintSolver.hpp"
 
 void defineDynamics()
 {
     defineDbvtBroadphase();
     defineDefaultCollisionConfiguration();
     defineCollisionDispatcher();
+    defineSequentialImpulseConstraintSolver();
 }
 
 #endif // _btBoostDynamics_hpp

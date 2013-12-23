@@ -53,7 +53,7 @@ Current classes that are fully wrapped:
 * btVector3 (not btVector4)
 * btMatrix3x3
 * btMotionState / btDefaultMotionState
-  * Note: check linear_math_tests/test_motionstate.py for how to handle inheritance of btMotionState and implementing the virtual callback methods.
+  * Note: check test_linear_math/test_motionstate.py for how to handle inheritance of btMotionState and implementing the virtual callback methods.
 * btAlignedObjectArray - preliminary support
   * This class is meant for general data passing to and from the library and not for use by the developer. If you need methods exposed feel free to submit a pull request.
   * Many internal operations are not supported such as sorts and such. SDK internal callers usually call for sorting when they need it.

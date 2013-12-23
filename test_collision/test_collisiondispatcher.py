@@ -17,7 +17,7 @@ class CollisionDispatcherTestCase(unittest.TestCase):
         self.cd = bullet.btCollisionDispatcher(self.config)
 
     def test_ctor(self):
-        pass
+        print("Ctors should have run here")
 
     def tearDown(self):
         del self.cd

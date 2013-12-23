@@ -35,15 +35,24 @@ def parallelCCompile(self, sources, output_dir=None, macros=None,
     list(multiprocessing.pool.ThreadPool(N).imap(_single_compile, objects))
     return objects
 import distutils.ccompiler
+
+src_dirs = [
+    'bullet_cpp/src/btBoost',
+    'bullet_cpp/src/LinearMath',
+    'bullet_cpp/src/BulletDynamics',
+    'bullet_cpp/src/BulletCollision',
+]
+
 if '-j' in sys.argv:
     sys.argv.remove('-j')
+    src_dirs.append(src_dirs[0])
+    del src_dirs[0]
     distutils.ccompiler.CCompiler.compile = parallelCCompile
 
 requires = []
 
 
 def list_cpp(d, skips=[]):
-    p = os.path.abspath(d)
     for root, _, files in os.walk(d):
         for f in [_f for _f in files if _f.endswith('.cpp')]:
             yield '%s/%s' % (root, f)
@@ -54,15 +63,8 @@ def find_sources(dirs):
         for f in list_cpp(d):
             yield f
 
-src_dirs = (
-    'bullet/src/LinearMath',
-    'bullet/src/BulletDynamics',
-    'bullet/src/BulletCollision',
-    'bullet/src/btBoost',
-)
-
 include_dirs = (
-    'bullet/src',
+    'bullet_cpp/src',
 )
 
 macros = [

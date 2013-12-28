@@ -20,12 +20,28 @@ init_btDiscreteDynamicsWorld(
                                        &config);
 }
 
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(ddw_step_overloads,
+                                       stepSimulation,
+                                       1, 3);
+
 void defineDiscreteDynamicsWorld()
 {
-    class_<btDiscreteDynamicsWorld, bases<btDynamicsWorld> >
+    class_<btDynamicsWorld, boost::noncopyable>("btDynamicsWorld", no_init);
+
+    class_<btDiscreteDynamicsWorld, bases<btDynamicsWorld>, boost::noncopyable>
         ("btDiscreteDynamicsWorld", no_init)
         .def("__init__", make_constructor(&init_btDiscreteDynamicsWorld))
-
+        .def("step_simulation", &btDiscreteDynamicsWorld::stepSimulation,
+             ddw_step_overloads())
+        .def("synchronize_motion_states",
+             &btDiscreteDynamicsWorld::synchronizeMotionStates)
+        .def("set_gravity",
+             &btDiscreteDynamicsWorld::setGravity)
+        .def("get_gravity",
+             &btDiscreteDynamicsWorld::getGravity)
+        .add_property("gravity",
+                      &btDiscreteDynamicsWorld::getGravity,
+                      &btDiscreteDynamicsWorld::setGravity)
     ;
 }
 

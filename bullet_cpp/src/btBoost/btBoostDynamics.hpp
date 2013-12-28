@@ -6,6 +6,7 @@
 #include "btBoostDynamicsDefaultCollisionConfiguration.hpp"
 #include "btBoostDynamicsCollisionDispatcher.hpp"
 #include "btBoostDynamicsSequentialImpulseConstraintSolver.hpp"
+#include "btBoostDynamicsDiscreteDynamicsWorld.hpp"
 
 void defineDynamics()
 {
@@ -13,6 +14,7 @@ void defineDynamics()
     defineDefaultCollisionConfiguration();
     defineCollisionDispatcher();
     defineSequentialImpulseConstraintSolver();
+    defineDiscreteDynamicsWorld();
 }
 
 #endif // _btBoostDynamics_hpp

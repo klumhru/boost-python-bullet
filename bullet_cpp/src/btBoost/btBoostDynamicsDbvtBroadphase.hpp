@@ -34,7 +34,7 @@ void defineDbvtBroadphase()
         ("btBroadphaseInterface", no_init)
     ;
 
-    class_<btDbvtBroadphase, bases<btBroadphaseInterface> >
+    class_<btDbvtBroadphase, bases<btBroadphaseInterface>, boost::noncopyable>
         ("btDbvtBroadphase")
         // Tons of properties
         .add_property("prediction", &btDbvtBroadphase::m_prediction)

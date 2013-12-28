@@ -18,4 +18,4 @@ install:
 dev: build-mp install test
 
 build-mp:
-	python setup.py build --force -j
+	CC='ccache gcc' python setup.py build --force -j

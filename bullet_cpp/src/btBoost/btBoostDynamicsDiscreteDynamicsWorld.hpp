@@ -22,7 +22,8 @@ init_btDiscreteDynamicsWorld(
 
 void defineDiscreteDynamicsWorld()
 {
-    class_<btDiscreteDynamicsWorld>("btDiscreteDynamicsWorld", no_init)
+    class_<btDiscreteDynamicsWorld, bases<btDynamicsWorld> >
+        ("btDiscreteDynamicsWorld", no_init)
         .def("__init__", make_constructor(&init_btDiscreteDynamicsWorld))
 
     ;

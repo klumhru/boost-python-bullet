@@ -26,7 +26,8 @@ void defineCollisionDispatcher()
         .export_values()
     ;
 
-    class_<btCollisionDispatcher>("btCollisionDispatcher", no_init)
+    class_<btCollisionDispatcher, bases<btDispatcher> >
+        ("btCollisionDispatcher", no_init)
     	.def("__init__", make_constructor(&make_CollisionDispatcher))
     	.add_property("flags",
     		&btCollisionDispatcher::getDispatcherFlags,

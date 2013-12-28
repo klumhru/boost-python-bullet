@@ -28,8 +28,14 @@ void defineDbvtBroadphase()
         .value("FIXED_SET", btDbvtBroadphase::FIXED_SET)
         .value("STAGECOUNT", btDbvtBroadphase::STAGECOUNT)
         .export_values()
-    ; 
-    class_<btDbvtBroadphase>("btDbvtBroadphase")
+    ;
+
+    class_<btBroadphaseInterface, boost::noncopyable>
+        ("btBroadphaseInterface", no_init)
+    ;
+
+    class_<btDbvtBroadphase, bases<btBroadphaseInterface> >
+        ("btDbvtBroadphase")
         // Tons of properties
         .add_property("prediction", &btDbvtBroadphase::m_prediction)
         .add_property("stage_current", &btDbvtBroadphase::m_stageCurrent)

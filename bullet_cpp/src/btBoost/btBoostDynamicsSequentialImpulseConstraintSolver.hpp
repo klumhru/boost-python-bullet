@@ -9,7 +9,8 @@ using namespace boost::python;
 
 void defineSequentialImpulseConstraintSolver()
 {
-    class_<btSequentialImpulseConstraintSolver>(
+    class_<btSequentialImpulseConstraintSolver,
+           bases<btConstraintSolver> >(
         "btSequentialImpulseConstraintSolver")
     ;
 }

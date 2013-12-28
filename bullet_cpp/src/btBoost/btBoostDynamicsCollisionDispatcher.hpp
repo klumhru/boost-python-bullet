@@ -26,7 +26,9 @@ void defineCollisionDispatcher()
         .export_values()
     ;
 
-    class_<btCollisionDispatcher, bases<btDispatcher> >
+    class_<btDispatcher, boost::noncopyable>("btDispatcher", no_init);
+
+    class_<btCollisionDispatcher, bases<btDispatcher>, boost::noncopyable>
         ("btCollisionDispatcher", no_init)
     	.def("__init__", make_constructor(&make_CollisionDispatcher))
     	.add_property("flags",

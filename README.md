@@ -2,7 +2,7 @@ boost-python-bullet - Work in Progress!
 ===================
 This is a thin boost wrapper on top of Bullet Physics SDK (http://bulletphysics.org) - Note that I am not the owner of Bullet Physics SDK, nor am I affiliated with them. Bullet Physics SDK is under a separate license. See ./bullet_cpp/BulletLicense.txt for reference. There are some minor alterations in the source, specifically anonumous enums in classes are named so that they can be wrapped in a constructive way.
 
-Feel free to contribute pull requests or post issues for discussion. Issues asking for ETAs on components will be closed without answers. 
+Feel free to contribute pull requests or post issues for discussion. Issues asking for ETAs on components will be closed without answers.
 
 Unittests are mandatory for all pull requests. See the provided tests for reference. If you want to use a different test framework, it must be supported by nose. Unittests for the Bullet SDK itself are outside the scope of the project.
 
@@ -74,6 +74,9 @@ Current classes that are fully wrapped (and tested):
 * btDefaultCollisionConfiguration
   * The default collision configuration
   * Includes btDefaultCollisionConstructionInfo used by its constructor
+* btDiscreteDynamicsWorld
+  * The default collision world
+  * Implementation is limited while work on supporting objects is ongoing
 
 Bullet internals
 ====

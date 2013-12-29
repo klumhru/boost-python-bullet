@@ -6,6 +6,7 @@
 #include <boost/python/suite/indexing/vector_indexing_suite.hpp>
 #include <boost/python.hpp>
 #include <boost/ref.hpp>
+#include <LinearMath/btVector3.h>
 #include <LinearMath/btAlignedObjectArray.h>
 
 using namespace boost::python;

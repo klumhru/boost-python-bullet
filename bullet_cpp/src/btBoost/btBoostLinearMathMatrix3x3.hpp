@@ -6,6 +6,9 @@
 #include <boost/python.hpp>
 #include <LinearMath/btMatrix3x3.h>
 
+using namespace boost::python;
+using namespace std;
+
 ostream& operator<<(ostream& os, const btMatrix3x3& m)
 {
     btVector3 a = m.getColumn(0),

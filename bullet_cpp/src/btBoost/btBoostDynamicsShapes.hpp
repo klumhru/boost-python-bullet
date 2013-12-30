@@ -111,7 +111,9 @@ void defineShapes()
         ("btConcaveShape", no_init)
     ;
 
-
+    class_<btTriangleMeshShape, bases<btConcaveShape>, boost::noncopyable>
+        ("btTriangleMeshShape", no_init)
+    ;
 
     // End base classes
 

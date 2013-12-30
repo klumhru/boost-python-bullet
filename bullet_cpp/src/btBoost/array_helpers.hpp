@@ -341,13 +341,14 @@ boost::python::object make_array_aux(Array array)
       typename trait_type::signature());
 }
 
-} // namespace array_helpers
-
 /// @brief Create a callable Boost.Python object from an array.
 template <typename T>
 boost::python::object make_array(T array)
 {
-  return array_helpers::make_array_aux(array);
+  return make_array_aux(array);
 }
+
+
+} // namespace array_helpers
 
 #endif // _array_helper_hpp

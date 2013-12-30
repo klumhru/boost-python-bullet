@@ -151,6 +151,10 @@ void defineShapes()
                                     return_internal_reference<>()))
     ;
 
+    class_<btBvhTriangleMeshShape, bases<btTriangleMeshShape>, boost::noncopyable>
+        ("btBvhTriangleMeshShape", no_init)
+    ; // TODO: Implement - left empty while deciding whether to define and wrap btStridingMeshInterface
+
 
 }
 

@@ -15,6 +15,8 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(chullshape_addPoint_overloads,
 
 void defineShapes()
 {
+    // Base classes, not for developer use
+
     class_<btCollisionShape, boost::noncopyable>
         ("btCollisionShape", no_init)
         .def_readonly("polyhedral", &btCollisionShape::isPolyhedral)
@@ -105,6 +107,15 @@ void defineShapes()
              &btPolyhedralConvexAabbCachingShape::getAabb)
     ;
 
+    class_<btConcaveShape, bases<btCollisionShape>, boost::noncopyable>
+        ("btConcaveShape", no_init)
+    ;
+
+
+
+    // End base classes
+
+    // TODO: Add tests
     class_<btConvexHullShape, bases<btPolyhedralConvexAabbCachingShape> >
         ("btConvexHullShape")
         .def("add_point", &btConvexHullShape::addPoint,
@@ -116,12 +127,25 @@ void defineShapes()
         .def("get_num_points", &btConvexHullShape::getNumPoints)
     ;
 
+    // TODO: Add tests
     class_<btBox2dShape, bases<btPolyhedralConvexShape> >
         ("btBox2dShape", init<const btVector3&>())
         .def_readonly("half_extents_with_margin",
-                      &btBox2dShape::getHalfExtentsWithMargin)
+                      make_function(&btBox2dShape::getHalfExtentsWithMargin,
+                                    return_value_policy<return_by_value>()))
         .def_readonly("half_extents_without_margin",
                       make_function(&btBox2dShape::getHalfExtentsWithoutMargin,
+                                    return_internal_reference<>()))
+    ;
+
+    // TODO: Add tests
+    class_<btBoxShape, bases<btPolyhedralConvexShape> >
+        ("btBoxShape", init<const btVector3&>())
+        .def_readonly("half_extents_with_margin",
+                      make_function(&btBoxShape::getHalfExtentsWithMargin,
+                                    return_value_policy<return_by_value>()))
+        .def_readonly("half_extents_without_margin",
+                      make_function(&btBoxShape::getHalfExtentsWithoutMargin,
                                     return_internal_reference<>()))
     ;
 

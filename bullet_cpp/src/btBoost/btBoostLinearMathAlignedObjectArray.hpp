@@ -27,9 +27,9 @@ using namespace boost::python;
 ///          - Default constructable, iterator constructable,
 ///          - begin(), end(), and size() member functions
 template <typename Container>
-class ref_index_suite
+class bt_ref_index_suite
   : public boost::python::indexing_suite<Container,
-      ref_index_suite<Container>, true, true>
+      bt_ref_index_suite<Container>, true, true>
 {
 public:
 
@@ -188,7 +188,7 @@ void defineAlignedObjectArray()
 {
     class_<btVector3Array>("btVector3Array")
         .def(init<btVector3Array>())
-        .def(ref_index_suite<btVector3Array>())
+        .def(bt_ref_index_suite<btVector3Array>())
         .def("append", &btVector3Array::push_back)
     ;
 }

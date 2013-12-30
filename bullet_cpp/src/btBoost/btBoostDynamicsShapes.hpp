@@ -3,9 +3,15 @@
 #define _btBoostDynamicsShapes_hpp
 
 #include <btBulletDynamicsCommon.h>
+#include <BulletCollision/CollisionShapes/btBox2dShape.h>
 #include <boost/python.hpp>
+#include "array_helpers.hpp"
 
 using namespace boost::python;
+
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(chullshape_addPoint_overloads,
+                                       btConvexHullShape::addPoint,
+                                       1, 2)
 
 void defineShapes()
 {
@@ -77,6 +83,49 @@ void defineShapes()
         .def("get_preferred_penetration_direction",
              &btConvexInternalShape::getPreferredPenetrationDirection)
     ;
+
+    class_<btPolyhedralConvexShape, bases<btConvexInternalShape>,
+           boost::noncopyable>
+        ("btPolyhedralConvexShape", no_init)
+        .def_readonly("num_vertices", &btPolyhedralConvexShape::getNumVertices)
+        .def_readonly("num_edges", &btPolyhedralConvexShape::getNumEdges)
+        .def("get_edge", &btPolyhedralConvexShape::getEdge)
+        .def("get_vertex", &btPolyhedralConvexShape::getVertex)
+        .def_readonly("num_planes", &btPolyhedralConvexShape::getNumPlanes)
+        .def("get_plane", &btPolyhedralConvexShape::getPlane)
+        .def_readonly("is_inside", &btPolyhedralConvexShape::isInside)
+    ;
+
+    class_<btPolyhedralConvexAabbCachingShape, bases<btPolyhedralConvexShape>,
+           boost::noncopyable>
+        ("btPolyhedralConvexAabbCachingShape", no_init)
+        .def("get_nonvirtual_aabb",
+             &btPolyhedralConvexAabbCachingShape::getNonvirtualAabb)
+        .def("recalc_local_aabb",
+             &btPolyhedralConvexAabbCachingShape::getAabb)
+    ;
+
+    class_<btConvexHullShape, bases<btPolyhedralConvexAabbCachingShape> >
+        ("btConvexHullShape")
+        .def("add_point", &btConvexHullShape::addPoint,
+             chullshape_addPoint_overloads())
+        .def("get_unscaled_points",
+             &btConvexHullShape::getUnscaledPoints_wrap,
+             return_internal_reference<>())
+        .def("get_scaled_point", &btConvexHullShape::getScaledPoint)
+        .def("get_num_points", &btConvexHullShape::getNumPoints)
+    ;
+
+    class_<btBox2dShape, bases<btPolyhedralConvexShape> >
+        ("btBox2dShape", init<const btVector3&>())
+        .def_readonly("half_extents_with_margin",
+                      &btBox2dShape::getHalfExtentsWithMargin)
+        .def_readonly("half_extents_without_margin",
+                      make_function(&btBox2dShape::getHalfExtentsWithoutMargin,
+                                    return_internal_reference<>()))
+    ;
+
+
 }
 
 #endif // _btBoostDynamicsShapes_hpp

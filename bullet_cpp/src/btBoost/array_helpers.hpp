@@ -10,6 +10,9 @@
 // This is taken wholesale from http://stackoverflow.com/questions/18882089/wrapping-arrays-in-boost-python
 // This header provides helpers to facilitate exposing C-style arrays in-place
 
+namespace array_helpers
+{
+
 template <typename> struct array_trait;
 
 /// @brief Type that proxies to an array.
@@ -338,11 +341,13 @@ boost::python::object make_array_aux(Array array)
       typename trait_type::signature());
 }
 
+} // namespace array_helpers
+
 /// @brief Create a callable Boost.Python object from an array.
 template <typename T>
 boost::python::object make_array(T array)
 {
-  return make_array_aux(array);
+  return array_helpers::make_array_aux(array);
 }
 
 #endif // _array_helper_hpp

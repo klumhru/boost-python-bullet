@@ -88,7 +88,11 @@ Const return values are avoided where possible. Where methods have both implemen
 
 The best way to study the use cases of the library is to read the (extensive) unittests.
 
-### implemented classes
+### Primitives passed by reference
+
+Where primitives are passed by reference as pseudo return values they are returned instead. This is because primitives are immutable in python. If more than one value is passed by reference they are returned as a tuple to maintain pythonity (new word, yay me).
+
+## Implemented classes
 
 Only a limited subset of the bullet library is wrapped so far. Work is ongoing.
 
@@ -120,8 +124,6 @@ Current classes that are fully wrapped (and tested):
 * btDiscreteDynamicsWorld
   * The default collision world
   * Implementation is limited while work on supporting objects is ongoing
-* btCollisionShape
-  * In progress (see trello list)
 
 Bullet internals
 ====

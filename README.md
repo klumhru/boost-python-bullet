@@ -14,6 +14,12 @@ Also note that some constructors that take pointer parameters are implemented us
 
 # Installation
 
+I strongly recommend developing using virtualenv
+
+Ubuntu: ```python-virtualenv```
+
+CentOS: ```yum install python.pip``` and ```pip install virtualenv``` (use sudo)
+
 ## Dependencies
 
 This library requires the boost libraries to be installed and the headers and shared libraries accessible. Version 1.35 and up should be supported (Boost.Python 2). It also requires the Python headers to be installed obviously.
@@ -28,7 +34,9 @@ You can run
 ```
 pip install -e git+git@github.com:Klumhru/boost-python-bullet.git#egg=boost-python-bullet
 ```
-You can also download the current branch and install by running ```python setup.py install.```
+You can also download the current branch
+git clone git@github.com:Klumhru/boost-python-bullet.git
+and install by running ```python setup.py install.```
 
 ## Tests
 

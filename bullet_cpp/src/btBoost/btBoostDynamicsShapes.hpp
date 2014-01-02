@@ -317,6 +317,28 @@ void defineShapes()
         .def("test_containment", &btConvexPolyhedron::testContainment)
         .def("project", &btConvexPolyhedron_project)
     ;
+
+    // TODO: Implement btConvexTriangleMeshShape
+    // NOTE: This awaits implementation of btStridingMeshInterface
+
+    // TODO: Implement tests
+    class_<btCylinderShape, bases<btConvexInternalShape> >
+        ("btCylinderShape", init<const btVector3&>())
+        .def_readonly("half_extents_with_margin",
+                      make_function(&btCylinderShape::getHalfExtentsWithMargin,
+                                    return_value_policy<return_by_value>()))
+        .def_readonly("half_extents_without_margin",
+                      make_function(&btCylinderShape::getHalfExtentsWithoutMargin,
+                                    return_value_policy<copy_const_reference>()))
+        .def("get_aabb", &btCylinderShape::getAabb)
+        .def_readonly("up_axis", &btCylinderShape::getUpAxis)
+    ;
+    class_<btCylinderShapeX, bases<btCylinderShape> >
+        ("btCylinderShapeX", init<const btVector3&>())
+    ;
+    class_<btCylinderShapeX, bases<btCylinderShape> >
+        ("btCylinderShapeX", init<const btVector3&>())
+    ;
 }
 
 #endif // _btBoostDynamicsShapes_hpp

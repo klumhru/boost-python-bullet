@@ -6,12 +6,29 @@
 #include <BulletCollision/CollisionShapes/btBox2dShape.h>
 #include <boost/python.hpp>
 #include "array_helpers.hpp"
+#include "btBoostLinearMathAlignedObjectArray.hpp"
 
 using namespace boost::python;
 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(chullshape_addPoint_overloads,
                                        btConvexHullShape::addPoint,
                                        1, 2)
+
+btTransform&    (btCompoundShape::*cs_getChildTransformRef)(int)        = &btCompoundShape::getChildTransform;
+btTransform&    (btCompoundShape::*cs_getChildTransformConstRef)(int)   = &btCompoundShape::getChildTransform;
+btCollisionShape*       (btCompoundShape::*cs_getChildShapeRef)(int)            = &btCompoundShape::getChildShape;
+const btCollisionShape* (btCompoundShape::*cs_getChildShapeConstRef)(int) const = &btCompoundShape::getChildShape;
+btDbvt*     (btCompoundShape::*cs_getDynamicAabbTree)()     = &btCompoundShape::getDynamicAabbTree;
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(compoundshape_updateChildTransform_overloads,
+                                       btCompoundShape::updateChildTransform,
+                                       2, 3)
+
+void cs_removeChildShape(btCompoundShape& cs, btCollisionShape& shape)
+{
+    return cs.removeChildShape(&shape);
+}
+
+typedef btAlignedObjectArray<btCompoundShapeChild> btCompoundShapeChildArray;
 
 void defineShapes()
 {
@@ -132,6 +149,12 @@ void defineShapes()
              make_setter(&btCompoundShapeChild::m_node, return_value_policy<reference_existing_object>()))
     ;
 
+    class_<btCompoundShapeChildArray>("btCompoundShapeChildArray")
+        .def(init<btCompoundShapeChildArray>())
+        .def(bt_ref_index_suite<btCompoundShapeChildArray>())
+        .def("append", &btCompoundShapeChildArray::push_back)
+    ;
+
     // End internal data passing
 
     // TODO: Add tests
@@ -195,7 +218,35 @@ void defineShapes()
         ("btCompoundShape")
         .def(init<bool>())
         .def("add_child_shape", &btCompoundShape::addChildShape)
+        .def("remove_child_shape_by_index",
+             &btCompoundShape::removeChildShapeByIndex)
+        .def("remove_child_shape",
+             cs_removeChildShape)
+        .def_readonly("num_child_shapes", &btCompoundShape::getNumChildShapes)
+        // TODO: Check implementation of
+        //       const btCollisionShape* getChildShape(int) const
+        .def("get_child_shape",
+             make_function(cs_getChildShapeRef,
+                           return_value_policy<reference_existing_object>()))
+        // TODO: Same goes for this one, but we can't prevent python callers from
+        //       modifying internal references, we'd just get a stack dump...
+        .def("get_child_transform",
+             make_function(cs_getChildTransformRef,
+                           return_internal_reference<>()))
+        .def("update_child_transform", &btCompoundShape::updateChildTransform,
+             compoundshape_updateChildTransform_overloads())
+        .def("get_child_list", &btCompoundShape::getChildListRef,
+             return_internal_reference<>())
+        .def_readonly("children", make_function(&btCompoundShape::getChildListRef,
+                      return_internal_reference<>()))
+        .def_readonly("dynamic_aabb_tree", make_function(cs_getDynamicAabbTree,
+                      return_value_policy<reference_existing_object>()))
+        .def("create_aabb_from_children", &btCompoundShape::createAabbTreeFromChildren)
+        // TODO: Investigate implementation of calculatePrincipalAxisTransform
+        .def_readonly("update_revision", &btCompoundShape::getUpdateRevision)
     ;
+
+
 }
 
 #endif // _btBoostDynamicsShapes_hpp

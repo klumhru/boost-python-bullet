@@ -12,6 +12,7 @@
 #include <boost/python.hpp>
 #include "array_helpers.hpp"
 #include "btBoostLinearMathAlignedObjectArray.hpp"
+#include "btBoostLinearMathVector3.hpp"
 
 using namespace boost::python;
 
@@ -61,6 +62,14 @@ make_btMinkowskiSumShape(btConvexShape& shapeA,
                          btConvexShape& shapeB)
 {
     return new btMinkowskiSumShape(&shapeA, &shapeB);
+}
+
+btMultiSphereShape*
+make_btMultiSphereShape(const btVector3Array positions,
+                        const btScalarArray radi,
+                        int numSpheres)
+{
+    return new btMultiSphereShape(&positions[0], &radi[0], numSpheres);
 }
 
 void defineShapes()
@@ -365,6 +374,7 @@ void defineShapes()
         .def_readwrite("restitution", &btMaterial::m_restitution)
     ;
 
+    // TODO: Implement tests
     class_<btMinkowskiSumShape, bases<btConvexInternalShape> >
         ("btMinkowskiSumShape", no_init)
         .def("__init__", make_constructor(&make_btMinkowskiSumShape))
@@ -380,6 +390,17 @@ void defineShapes()
                       return_internal_reference<>()))
         .def_readonly("shapeB", make_function(&btMinkowskiSumShape::getShapeB,
                       return_internal_reference<>()))
+    ;
+
+    class_<btMultiSphereShape, bases<btConvexInternalAabbCachingShape> >
+        ("btMultiSphereShape", no_init)
+        .def("__init__", make_constructor(&make_btMultiSphereShape))
+        .def_readonly("sphere_count", &btMultiSphereShape::getSphereCount)
+        .def("get_sphere_position", &btMultiSphereShape::getSpherePosition,
+             return_value_policy<copy_const_reference>())
+        .def("get_sphere_radius", &btMultiSphereShape::getSphereRadius,
+             return_value_policy<return_by_value>())
+
     ;
 }
 

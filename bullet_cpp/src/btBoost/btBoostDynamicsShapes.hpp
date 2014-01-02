@@ -6,6 +6,7 @@
 #include <BulletCollision/CollisionShapes/btBox2dShape.h>
 #include <BulletCollision/CollisionShapes/btConvex2dShape.h>
 #include <BulletCollision/CollisionShapes/btConvexPointCloudShape.h>
+#include <BulletCollision/CollisionShapes/btConvexPolyhedron.h>
 #include <boost/python.hpp>
 #include "array_helpers.hpp"
 #include "btBoostLinearMathAlignedObjectArray.hpp"
@@ -38,6 +39,21 @@ make_btConvex2dShape(btConvexShape& childShape)
 btConvexShape*  (btConvex2dShape::*c2ds_getChildShapeRef)()     = &btConvex2dShape::getChildShape;
 
 typedef btAlignedObjectArray<btCompoundShapeChild> btCompoundShapeChildArray;
+
+typedef btAlignedObjectArray<btFace> btFaceArray;
+
+tuple btConvexPolyhedron_project(btConvexPolyhedron& self,
+                                 const btTransform& trans,
+                                 const btVector3& dir,
+                                 btScalar& minProj,
+                                 btScalar& maxProj,
+                                 btVector3& witnesPtMin,
+                                 btVector3& witnesPtMax)
+{
+    self.project(trans, dir, minProj, maxProj, witnesPtMin, witnesPtMax);
+    return make_tuple(minProj, maxProj);
+}
+
 
 void defineShapes()
 {
@@ -277,12 +293,29 @@ void defineShapes()
                       return_value_policy<reference_existing_object>()))
     ;
 
+    // TODO: Implement tests
     class_<btConvexPointCloudShape, bases<btPolyhedralConvexAabbCachingShape> >
         ("btConvexPointCloudShape")
         // NOTE: This does not implement the pointer referencing ctors
         //       or getter/setter methods
         .def_readonly("num_points", &btConvexPointCloudShape::getNumPoints)
         .def("get_scaled_point", &btConvexPointCloudShape::getScaledPoint)
+    ;
+
+    // TODO: Implement tests
+    class_<btConvexPolyhedron>
+        ("btConvexPolyhedron")
+        .def_readwrite("vertices", &btConvexPolyhedron::m_vertices)
+        .def_readwrite("faces", &btConvexPolyhedron::m_faces)
+        .def_readwrite("unique_edges", &btConvexPolyhedron::m_uniqueEdges)
+        .def_readwrite("local_center", &btConvexPolyhedron::m_localCenter)
+        .def_readwrite("extents", &btConvexPolyhedron::m_extents)
+        .def_readwrite("radius", &btConvexPolyhedron::m_radius)
+        .def_readwrite("mC", &btConvexPolyhedron::mC)
+        .def_readwrite("mE", &btConvexPolyhedron::mE)
+        .def("initialize", &btConvexPolyhedron::initialize)
+        .def("test_containment", &btConvexPolyhedron::testContainment)
+        .def("project", &btConvexPolyhedron_project)
     ;
 }
 

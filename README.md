@@ -24,7 +24,11 @@ The library has been built and tested on Linux (Ubuntu 12.04, 13.04, CentOS 5.1,
 
 ## Setup
 
-You can run pip install -e git+git@github.com:Klumhru/boost-python-bullet.git#egg=boost-python-bullet. You can also download the current branch and install by running python setup.py install.
+You can run
+```
+pip install -e git+git@github.com:Klumhru/boost-python-bullet.git#egg=boost-python-bullet
+```
+You can also download the current branch and install by running ```python setup.py install.```
 
 ## Tests
 
@@ -46,6 +50,25 @@ setValue -> set_value
 Some methods have been changed to properties, as in btVector3.length
 
 By default "m_" style prefixes for public data members have been removed. In most cases "get_" prefixes have also been removed, with the exception of those that take arguments.
+
+Example:
+
+```C++
+int btCompoundShape::getNumChildShapes() const
+```
+Becomes:
+```Python
+a.num_child_shapes # :int
+```
+
+On the other hand:
+```C++
+btCollisionShape* btCompoundShape::getChildShape(int)
+```
+Becomes:
+```Python
+a.get_child_shape(:int)
+```
 
 ### Descriptive naming
 

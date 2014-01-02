@@ -246,7 +246,19 @@ void defineShapes()
         .def_readonly("update_revision", &btCompoundShape::getUpdateRevision)
     ;
 
-
+    // TODO: Implement tests
+    class_<btConeShape, bases<btConvexInternalShape> >
+        ("btConeShape", init<btScalar, btScalar>())
+        .def_readonly("radius", &btConeShape::getRadius)
+        .def_readonly("height", &btConeShape::getHeight)
+        .def_readonly("cone_up_index", &btConeShape::getConeUpIndex)
+    ;
+    class_<btConeShapeX, bases<btConeShape> >
+        ("btConeShapeX", init<btScalar, btScalar>())
+    ;
+    class_<btConeShapeZ, bases<btConeShape> >
+        ("btConeShapeZ", init<btScalar, btScalar>())
+    ;
 }
 
 #endif // _btBoostDynamicsShapes_hpp

@@ -22,6 +22,7 @@ void defineLinearMath()
     defineTransform();
     defineMotionState();
     defineTransformUtil();
+    definePrimitiveArrays();
 }
 
 #endif // _btBoostLinearMath_hpp

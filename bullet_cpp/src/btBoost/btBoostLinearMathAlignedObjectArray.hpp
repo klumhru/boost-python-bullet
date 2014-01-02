@@ -182,4 +182,15 @@ public:
     }
 };
 
+typedef btAlignedObjectArray<int> btIntArray;
+
+void definePrimitiveArrays()
+{
+    class_<btIntArray>("btIntArray")
+        .def(init<btIntArray>())
+        .def(bt_ref_index_suite<btIntArray>())
+        .def("append", &btIntArray::push_back)
+    ;
+}
+
 #endif // _btBoostLinearMathAlignedObjectArray_hpp

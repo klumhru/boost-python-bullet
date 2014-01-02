@@ -32,20 +32,30 @@ The library is fully unit tested using python unittest. You can install nose and
 
 # Usage
 
-You can use the bullet physics manual for reference but member methods have been
-renamed to conform to python convention:
+You can use the bullet physics manual for reference but
+
+### Member functions
+
+Member methods have been renamed to conform to python convention:
 
 setRotation -> set_rotation
 setValue -> set_value
-etc...
 
-Also some methods have been changed to properties, as in btVector3.length
+### Properties / Data members
+
+Some methods have been changed to properties, as in btVector3.length
 
 By default "m_" style prefixes for public data members have been removed. In most cases "get_" prefixes have also been removed, with the exception of those that take arguments.
+
+### Descriptive naming
 
 Some methods have twins that have more descriptive names: btVector3.length_sqr
 exists along with btVector3.length2 which is a property instead of a method as in
 C++
+
+### Const return values
+
+Const return values are avoided where possible. Where methods have both implementations in CPP only the reference returning method is wrapped. This is intentional to avoid stack dumps that *will occur* when dealing with const ref instances in python if they are modified in python space.
 
 The best way to study the use cases of the library is to read the (extensive) unittests.
 

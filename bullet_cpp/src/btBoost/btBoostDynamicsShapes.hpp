@@ -4,6 +4,7 @@
 
 #include <btBulletDynamicsCommon.h>
 #include <BulletCollision/CollisionShapes/btBox2dShape.h>
+#include <BulletCollision/CollisionShapes/btConvex2dShape.h>
 #include <boost/python.hpp>
 #include "array_helpers.hpp"
 #include "btBoostLinearMathAlignedObjectArray.hpp"
@@ -27,6 +28,13 @@ void cs_removeChildShape(btCompoundShape& cs, btCollisionShape& shape)
 {
     return cs.removeChildShape(&shape);
 }
+
+btConvex2dShape*
+make_btConvex2dShape(btConvexShape& childShape)
+{
+    return new btConvex2dShape(&childShape);
+}
+btConvexShape*  (btConvex2dShape::*c2ds_getChildShapeRef)()     = &btConvex2dShape::getChildShape;
 
 typedef btAlignedObjectArray<btCompoundShapeChild> btCompoundShapeChildArray;
 
@@ -259,6 +267,16 @@ void defineShapes()
     class_<btConeShapeZ, bases<btConeShape> >
         ("btConeShapeZ", init<btScalar, btScalar>())
     ;
+
+    // TODO: Implement tests
+    class_<btConvex2dShape, bases<btConvexShape> >
+        ("btConvex2dShape", no_init)
+        .def("__init__", make_constructor(&make_btConvex2dShape))
+        .def_readonly("child_shape", make_function(c2ds_getChildShapeRef,
+                      return_value_policy<reference_existing_object>()))
+    ;
+
+
 }
 
 #endif // _btBoostDynamicsShapes_hpp

@@ -339,6 +339,14 @@ void defineShapes()
     class_<btCylinderShapeX, bases<btCylinderShape> >
         ("btCylinderShapeX", init<const btVector3&>())
     ;
+
+    // TODO: Implement tests
+    class_<btEmptyShape, bases<btConcaveShape> >
+        ("btEmptyShape")
+        .def("get_aabb", &btEmptyShape::getAabb)
+    ;
+
+
 }
 
 #endif // _btBoostDynamicsShapes_hpp

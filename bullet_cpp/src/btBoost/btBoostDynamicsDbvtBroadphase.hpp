@@ -16,6 +16,8 @@ void defineDbvtBroadphase()
 {
     class_<btDbvt, boost::noncopyable>("btDbvt");
 
+    class_<btDbvtNode, boost::noncopyable>("btDbvtNode");
+
     class_<btCollisionDispatcher, boost::noncopyable>("btCollisionDispatcher",
         init<btCollisionConfiguration*>());
 

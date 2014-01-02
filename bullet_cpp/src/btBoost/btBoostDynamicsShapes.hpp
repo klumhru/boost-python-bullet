@@ -3,6 +3,8 @@
 #define _btBoostDynamicsShapes_hpp
 
 #include <btBulletDynamicsCommon.h>
+#include <BulletCollision/CollisionShapes/btMaterial.h>
+#include <BulletCollision/CollisionShapes/btMinkowskiSumShape.h>
 #include <BulletCollision/CollisionShapes/btBox2dShape.h>
 #include <BulletCollision/CollisionShapes/btConvex2dShape.h>
 #include <BulletCollision/CollisionShapes/btConvexPointCloudShape.h>
@@ -54,6 +56,12 @@ tuple btConvexPolyhedron_project(btConvexPolyhedron& self,
     return make_tuple(minProj, maxProj);
 }
 
+btMinkowskiSumShape*
+make_btMinkowskiSumShape(btConvexShape& shapeA,
+                         btConvexShape& shapeB)
+{
+    return new btMinkowskiSumShape(&shapeA, &shapeB);
+}
 
 void defineShapes()
 {
@@ -336,8 +344,8 @@ void defineShapes()
     class_<btCylinderShapeX, bases<btCylinderShape> >
         ("btCylinderShapeX", init<const btVector3&>())
     ;
-    class_<btCylinderShapeX, bases<btCylinderShape> >
-        ("btCylinderShapeX", init<const btVector3&>())
+    class_<btCylinderShapeZ, bases<btCylinderShape> >
+        ("btCylinderShapeZ", init<const btVector3&>())
     ;
 
     // TODO: Implement tests
@@ -346,7 +354,33 @@ void defineShapes()
         .def("get_aabb", &btEmptyShape::getAabb)
     ;
 
+    // NOTE: Implementation of heightfield shape is deferred. It will require implementation of constructor factories
 
+    // TODO: Implement tests - if possible
+    class_<btMaterial>
+        ("btMaterial")
+        .def(init<>())
+        .def(init<btScalar, btScalar>())
+        .def_readwrite("friction", &btMaterial::m_friction)
+        .def_readwrite("restitution", &btMaterial::m_restitution)
+    ;
+
+    class_<btMinkowskiSumShape, bases<btConvexInternalShape> >
+        ("btMinkowskiSumShape", no_init)
+        .def("__init__", make_constructor(&make_btMinkowskiSumShape))
+        .add_property("transformA",
+                      make_function(&btMinkowskiSumShape::getTransformA,
+                                    return_value_policy<copy_const_reference>()),
+                      &btMinkowskiSumShape::setTransformA)
+        .add_property("transformB",
+                      make_function(&btMinkowskiSumShape::GetTransformB,
+                                    return_value_policy<copy_const_reference>()),
+                      &btMinkowskiSumShape::setTransformB)
+        .def_readonly("shapeA", make_function(&btMinkowskiSumShape::getShapeA,
+                      return_internal_reference<>()))
+        .def_readonly("shapeB", make_function(&btMinkowskiSumShape::getShapeB,
+                      return_internal_reference<>()))
+    ;
 }
 
 #endif // _btBoostDynamicsShapes_hpp

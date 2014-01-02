@@ -5,6 +5,7 @@
 #include <btBulletDynamicsCommon.h>
 #include <BulletCollision/CollisionShapes/btBox2dShape.h>
 #include <BulletCollision/CollisionShapes/btConvex2dShape.h>
+#include <BulletCollision/CollisionShapes/btConvexPointCloudShape.h>
 #include <boost/python.hpp>
 #include "array_helpers.hpp"
 #include "btBoostLinearMathAlignedObjectArray.hpp"
@@ -276,7 +277,13 @@ void defineShapes()
                       return_value_policy<reference_existing_object>()))
     ;
 
-
+    class_<btConvexPointCloudShape, bases<btPolyhedralConvexAabbCachingShape> >
+        ("btConvexPointCloudShape")
+        // NOTE: This does not implement the pointer referencing ctors
+        //       or getter/setter methods
+        .def_readonly("num_points", &btConvexPointCloudShape::getNumPoints)
+        .def("get_scaled_point", &btConvexPointCloudShape::getScaledPoint)
+    ;
 }
 
 #endif // _btBoostDynamicsShapes_hpp

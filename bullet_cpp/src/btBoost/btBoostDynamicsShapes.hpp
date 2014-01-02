@@ -155,7 +155,20 @@ void defineShapes()
         ("btBvhTriangleMeshShape", no_init)
     ; // TODO: Implement - left empty while deciding whether to define and wrap btStridingMeshInterface
 
+    class_<btCapsuleShape, bases<btConvexInternalShape> >
+        ("btCapsuleShape", init<btScalar, btScalar>())
+        .def_readonly("up_axis", &btCapsuleShape::getUpAxis)
+        .def_readonly("radius", &btCapsuleShape::getRadius)
+        .def_readonly("half_height", &btCapsuleShape::getHalfHeight)
+    ;
 
+    class_<btCapsuleShapeX, bases<btCapsuleShape> >
+        ("btCapsuleShapeX", init<btScalar, btScalar>())
+    ;
+
+    class_<btCapsuleShapeZ, bases<btCapsuleShape> >
+        ("btCapsuleShapeZ", init<btScalar, btScalar>())
+    ;
 }
 
 #endif // _btBoostDynamicsShapes_hpp

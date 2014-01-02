@@ -41,6 +41,8 @@ etc...
 
 Also some methods have been changed to properties, as in btVector3.length
 
+By default "m_" style prefixes for public data members have been removed. In most cases "get_" prefixes have also been removed, with the exception of those that take arguments.
+
 Some methods have twins that have more descriptive names: btVector3.length_sqr
 exists along with btVector3.length2 which is a property instead of a method as in
 C++
@@ -79,7 +81,11 @@ Current classes that are fully wrapped (and tested):
 * btDiscreteDynamicsWorld
   * The default collision world
   * Implementation is limited while work on supporting objects is ongoing
+* btCollisionShape
+  * In progress (see trello list)
 
 Bullet internals
 ====
-Internals used for data transfer and internal logic are not exposed. Common collection implementations of btAlignedObjectArray will be implemented for the exposed classes where applicable, e.g. btVector3, but not btDynamicsWorld. I you need something from the internals of Bullet, feel free to submit a pull request. Note that only requests with full tests will be merged.
+Internals used for data transfer and internal logic are not exposed except where neccesary, and then without property implementations, and only limited constructors (or none at all). btDbvtNode and btDbvt are examples of this.
+
+Common collection implementations of btAlignedObjectArray will be implemented for the exposed classes where applicable, e.g. btVector3, but not btDynamicsWorld. I you need something from the internals of Bullet, feel free to submit a pull request. Note that only requests with full tests will be merged.

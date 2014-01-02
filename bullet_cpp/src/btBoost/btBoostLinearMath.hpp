@@ -21,7 +21,6 @@ void defineLinearMath()
     defineMatrix3x3();
     defineTransform();
     defineMotionState();
-    defineAlignedObjectArray();
     defineTransformUtil();
 }
 

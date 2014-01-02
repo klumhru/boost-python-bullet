@@ -5,6 +5,7 @@
 #include <iostream>
 #include <boost/python.hpp>
 #include <LinearMath/btVector3.h>
+#include "btBoostLinearMathAlignedObjectArray.hpp"
 
 using namespace boost::python;
 using namespace std;
@@ -21,6 +22,8 @@ btVector3 abs(const btVector3& v)
 }
 
 // TODO: Define static methods for the 6 directional axes
+
+typedef btAlignedObjectArray<btVector3> btVector3Array;
 
 void defineVector3()
 {
@@ -89,6 +92,12 @@ void defineVector3()
         .def("set_interpolate_3", &btVector3::setInterpolate3)
         .def("lerp", &btVector3::lerp)
         .def("dot3", &btVector3::dot3);
+
+    class_<btVector3Array>("btVector3Array")
+        .def(init<btVector3Array>())
+        .def(bt_ref_index_suite<btVector3Array>())
+        .def("append", &btVector3Array::push_back)
+    ;
 }
 
 #endif // _btBoostDynamicsVector3_hpp

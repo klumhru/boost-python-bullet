@@ -182,15 +182,4 @@ public:
     }
 };
 
-typedef btAlignedObjectArray<btVector3> btVector3Array;
-
-void defineAlignedObjectArray()
-{
-    class_<btVector3Array>("btVector3Array")
-        .def(init<btVector3Array>())
-        .def(bt_ref_index_suite<btVector3Array>())
-        .def("append", &btVector3Array::push_back)
-    ;
-}
-
 #endif // _btBoostLinearMathAlignedObjectArray_hpp

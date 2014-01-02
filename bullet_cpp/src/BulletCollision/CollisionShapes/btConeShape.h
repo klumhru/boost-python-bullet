@@ -4,8 +4,8 @@ Copyright (c) 2003-2009 Erwin Coumans  http://bulletphysics.org
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
-Permission is granted to anyone to use this software for any purpose, 
-including commercial applications, and to alter it and redistribute it freely, 
+Permission is granted to anyone to use this software for any purpose,
+including commercial applications, and to alter it and redistribute it freely,
 subject to the following restrictions:
 
 1. The origin of this software must not be misrepresented; you must not claim that you wrote the original software. If you use this software in a product, an acknowledgment in the product documentation would be appreciated but is not required.
@@ -33,9 +33,9 @@ ATTRIBUTE_ALIGNED16(class) btConeShape : public btConvexInternalShape
 
 public:
 	BT_DECLARE_ALIGNED_ALLOCATOR();
-	
+
 	btConeShape (btScalar radius,btScalar height);
-	
+
 	virtual btVector3	localGetSupportingVertex(const btVector3& vec) const;
 	virtual btVector3	localGetSupportingVertexWithoutMargin(const btVector3& vec) const;
 	virtual void	batchedUnitVectorGetSupportingVertexWithoutMargin(const btVector3* vectors,btVector3* supportVerticesOut,int numVectors) const;
@@ -71,14 +71,14 @@ public:
 	}
 
 
-		virtual const char*	getName()const 
+		virtual const char*	getName()const
 		{
 			return "Cone";
 		}
-		
+
 		///choose upAxis index
 		void	setConeUpIndex(int upIndex);
-		
+
 		int	getConeUpIndex() const
 		{
 			return m_coneIndices[1];
@@ -90,13 +90,13 @@ public:
 	}
 
 	virtual void	setLocalScaling(const btVector3& scaling);
-	
-	
+
+
 	virtual	int	calculateSerializeBufferSize() const;
-	
+
 	///fills the dataBuffer and returns the struct name (and 0 on failure)
 	virtual	const char*	serialize(void* dataBuffer, btSerializer* serializer) const;
-	
+
 
 };
 
@@ -116,8 +116,8 @@ class btConeShapeX : public btConeShape
 	{
 		return "ConeX";
 	}
-	
-	
+
+
 };
 
 ///btConeShapeZ implements a Cone shape, around the Z axis
@@ -136,17 +136,17 @@ public:
 	{
 		return "ConeZ";
 	}
-	
-	
+
+
 };
 
 ///do not change those serialization structures, it requires an updated sBulletDNAstr/sBulletDNAstr64
 struct	btConeShapeData
 {
 	btConvexInternalShapeData	m_convexInternalShapeData;
-	
+
 	int	m_upIndex;
-	
+
 	char	m_padding[4];
 };
 
@@ -159,11 +159,11 @@ SIMD_FORCE_INLINE	int	btConeShape::calculateSerializeBufferSize() const
 SIMD_FORCE_INLINE	const char*	btConeShape::serialize(void* dataBuffer, btSerializer* serializer) const
 {
 	btConeShapeData* shapeData = (btConeShapeData*) dataBuffer;
-	
+
 	btConvexInternalShape::serialize(&shapeData->m_convexInternalShapeData,serializer);
-	
+
 	shapeData->m_upIndex = m_coneIndices[1];
-	
+
 	return "btConeShapeData";
 }
 

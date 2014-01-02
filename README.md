@@ -8,7 +8,7 @@ Feel free to contribute pull requests or post issues for discussion. Issues aski
 
 Unittests are mandatory for all pull requests. See the provided tests for reference. If you want to use a different test framework, it must be supported by nose. Unittests for the Bullet SDK itself are outside the scope of the project.
 
-Also note the diferrences from reference in Bullet (see below), and calling conventions for pass-by-reference methods with primitive parameters (str, int, float, etc).
+Also note the differences from reference in Bullet (see below), and calling conventions for pass-by-reference methods with primitive parameters (str, int, float, etc).
 
 Also note that some constructors that take pointer parameters are implemented using factory methods, e.g. btDiscreteDynamicsWorld.
 
@@ -34,9 +34,7 @@ You can run
 ```
 pip install -e git+git@github.com:Klumhru/boost-python-bullet.git#egg=boost-python-bullet
 ```
-You can also download the current branch
-git clone git@github.com:Klumhru/boost-python-bullet.git
-and install by running ```python setup.py install.```
+You can also download the current branch ```git clone git@github.com:Klumhru/boost-python-bullet.git``` and install by running ```python setup.py install.```
 
 ## Tests
 

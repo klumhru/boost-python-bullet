@@ -12,6 +12,8 @@ Also note the differences from reference in Bullet (see below), and calling conv
 
 Also note that some constructors that take pointer parameters are implemented using factory methods, e.g. btDiscreteDynamicsWorld.
 
+Serialization structures (e.g. btCompoundShapeData) are not wrapped. Serialization of these objects is beyond the scope of the project as it stands.
+
 # Installation
 
 I strongly recommend developing using virtualenv

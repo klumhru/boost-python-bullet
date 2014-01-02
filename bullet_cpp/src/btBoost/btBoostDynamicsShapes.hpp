@@ -117,6 +117,23 @@ void defineShapes()
 
     // End base classes
 
+    // Some internal data passing classes
+
+    class_<btCompoundShapeChild>("btCompoundShapeChild")
+        .def(self == other<btCompoundShapeChild>())
+        .def_readwrite("transform", &btCompoundShapeChild::m_transform)
+        .add_property("child_shape",
+             make_getter(&btCompoundShapeChild::m_childShape, return_value_policy<reference_existing_object>()),
+             make_setter(&btCompoundShapeChild::m_childShape, return_value_policy<reference_existing_object>()))
+        .def_readwrite("child_shape_type", &btCompoundShapeChild::m_childShapeType)
+        .def_readwrite("child_margin", &btCompoundShapeChild::m_childMargin)
+        .add_property("node",
+             make_getter(&btCompoundShapeChild::m_node, return_value_policy<reference_existing_object>()),
+             make_setter(&btCompoundShapeChild::m_node, return_value_policy<reference_existing_object>()))
+    ;
+
+    // End internal data passing
+
     // TODO: Add tests
     class_<btConvexHullShape, bases<btPolyhedralConvexAabbCachingShape> >
         ("btConvexHullShape")
@@ -155,6 +172,7 @@ void defineShapes()
         ("btBvhTriangleMeshShape", no_init)
     ; // TODO: Implement - left empty while deciding whether to define and wrap btStridingMeshInterface
 
+    // TODO: Implement tests
     class_<btCapsuleShape, bases<btConvexInternalShape> >
         ("btCapsuleShape", init<btScalar, btScalar>())
         .def_readonly("up_axis", &btCapsuleShape::getUpAxis)
@@ -162,12 +180,21 @@ void defineShapes()
         .def_readonly("half_height", &btCapsuleShape::getHalfHeight)
     ;
 
+    // TODO: Implement tests
     class_<btCapsuleShapeX, bases<btCapsuleShape> >
         ("btCapsuleShapeX", init<btScalar, btScalar>())
     ;
 
+    // TODO: Implement tests
     class_<btCapsuleShapeZ, bases<btCapsuleShape> >
         ("btCapsuleShapeZ", init<btScalar, btScalar>())
+    ;
+
+    // TODO: Implement tests
+    class_<btCompoundShape, bases<btCollisionShape> >
+        ("btCompoundShape")
+        .def(init<bool>())
+        .def("add_child_shape", &btCompoundShape::addChildShape)
     ;
 }
 

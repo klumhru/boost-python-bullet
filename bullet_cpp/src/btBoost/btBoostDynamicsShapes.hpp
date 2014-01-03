@@ -459,6 +459,14 @@ void defineShapes()
         .def_readonly("radius", &btSphereShape::getRadius)
         .def("set_unscaled_radius", &btSphereShape::setUnscaledRadius)
     ;
+
+    class_<btStaticPlaneShape, bases<btConcaveShape> >
+        ("btStaticPlaneShape", init<const btVector3&, btScalar>())
+        .def_readonly("plane_normal", make_function(&btStaticPlaneShape::getPlaneNormal,
+                      return_value_policy<copy_const_reference>()))
+        .def_readonly("plane_constant", make_function(&btStaticPlaneShape::getPlaneConstant,
+                      return_value_policy<return_by_value>()))
+    ;
 }
 
 #endif // _btBoostDynamicsShapes_hpp

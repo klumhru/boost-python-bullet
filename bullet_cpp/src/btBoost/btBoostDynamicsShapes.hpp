@@ -452,6 +452,13 @@ void defineShapes()
         .def_readonly("indices", make_function(&btShapeHull::getIndexList,
                       return_internal_reference<>()))
     ;
+
+    // TODO: Implement tests
+    class_<btSphereShape, bases<btConvexInternalShape> >
+        ("btSphereShape", init<btScalar>())
+        .def_readonly("radius", &btSphereShape::getRadius)
+        .def("set_unscaled_radius", &btSphereShape::setUnscaledRadius)
+    ;
 }
 
 #endif // _btBoostDynamicsShapes_hpp

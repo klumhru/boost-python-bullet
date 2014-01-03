@@ -183,6 +183,7 @@ public:
 };
 
 typedef btAlignedObjectArray<int> btIntArray;
+typedef btAlignedObjectArray<unsigned int> btUIntArray;
 typedef btAlignedObjectArray<btScalar> btScalarArray;
 
 void definePrimitiveArrays()
@@ -192,6 +193,13 @@ void definePrimitiveArrays()
         .def(init<btIntArray>())
         .def(bt_ref_index_suite<btIntArray>())
         .def("append", &btIntArray::push_back)
+    ;
+
+    // TODO: Needs tests
+    class_<btUIntArray>("btUIntArray")
+        .def(init<btUIntArray>())
+        .def(bt_ref_index_suite<btUIntArray>())
+        .def("append", &btUIntArray::push_back)
     ;
 
     // TODO: Needs tests

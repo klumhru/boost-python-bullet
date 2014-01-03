@@ -4,7 +4,9 @@
 
 #include <btBulletDynamicsCommon.h>
 #include <BulletCollision/CollisionShapes/btMaterial.h>
+#include <BulletCollision/CollisionShapes/btMultimaterialTriangleMeshShape.h>
 #include <BulletCollision/CollisionShapes/btMinkowskiSumShape.h>
+#include <BulletCollision/CollisionShapes/btShapeHull.h>
 #include <BulletCollision/CollisionShapes/btBox2dShape.h>
 #include <BulletCollision/CollisionShapes/btConvex2dShape.h>
 #include <BulletCollision/CollisionShapes/btConvexPointCloudShape.h>
@@ -70,6 +72,21 @@ make_btMultiSphereShape(const btVector3Array positions,
                         int numSpheres)
 {
     return new btMultiSphereShape(&positions[0], &radi[0], numSpheres);
+}
+
+btScaledBvhTriangleMeshShape*
+make_btScaledBvhTriangleMeshShape(btBvhTriangleMeshShape& childShape,
+                                  const btVector3& localScaling)
+{
+    return new btScaledBvhTriangleMeshShape(&childShape,
+                                            localScaling);
+}
+btBvhTriangleMeshShape* (btScaledBvhTriangleMeshShape::*sbvhtrimesh_getChildShape)() = &btScaledBvhTriangleMeshShape::getChildShape;
+
+btShapeHull*
+make_btShapeHull(const btConvexShape& shape)
+{
+    return new btShapeHull(&shape);
 }
 
 void defineShapes()
@@ -172,6 +189,11 @@ void defineShapes()
 
     class_<btTriangleMeshShape, bases<btConcaveShape>, boost::noncopyable>
         ("btTriangleMeshShape", no_init)
+    ;
+
+    class_<btConvexInternalAabbCachingShape, bases<btConvexInternalShape>,
+           boost::noncopyable>
+        ("btConvexInternalAabbCachingShape", no_init)
     ;
 
     // End base classes
@@ -392,6 +414,7 @@ void defineShapes()
                       return_internal_reference<>()))
     ;
 
+    // TODO: Implement tests
     class_<btMultiSphereShape, bases<btConvexInternalAabbCachingShape> >
         ("btMultiSphereShape", no_init)
         .def("__init__", make_constructor(&make_btMultiSphereShape))
@@ -400,7 +423,34 @@ void defineShapes()
              return_value_policy<copy_const_reference>())
         .def("get_sphere_radius", &btMultiSphereShape::getSphereRadius,
              return_value_policy<return_by_value>())
+    ;
 
+    // TODO: Implement tests
+    class_<btMultimaterialTriangleMeshShape, bases<btBvhTriangleMeshShape> >
+        ("btMultiMaterialTriangleMeshShape", no_init)
+    ; // See notes on btBvhTriangleMeshShape
+
+    // TODO: Implement tests
+    class_<btScaledBvhTriangleMeshShape, bases<btConcaveShape> >
+        ("btScaledBvhTriangleMeshShape", no_init)
+        .def("__init__", make_constructor(&make_btScaledBvhTriangleMeshShape))
+        .def_readonly("child_shape",
+                      make_function(sbvhtrimesh_getChildShape,
+                                    return_value_policy<reference_existing_object>()))
+    ;
+
+    // TODO: Implement tests
+    class_<btShapeHull>
+        ("btShapeHull", no_init)
+        .def("__init__", make_constructor(&make_btShapeHull))
+        .def("build_hull", &btShapeHull::buildHull)
+        .def_readonly("num_triangles", &btShapeHull::numTriangles)
+        .def_readonly("num_vertices", &btShapeHull::numVertices)
+        .def_readonly("num_indices", &btShapeHull::numIndices)
+        .def_readonly("vertices", make_function(&btShapeHull::getVertexList,
+                      return_internal_reference<>()))
+        .def_readonly("indices", make_function(&btShapeHull::getIndexList,
+                      return_internal_reference<>()))
     ;
 }
 

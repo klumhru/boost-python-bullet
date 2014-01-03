@@ -460,12 +460,25 @@ void defineShapes()
         .def("set_unscaled_radius", &btSphereShape::setUnscaledRadius)
     ;
 
+    // TODO: Implement tests
     class_<btStaticPlaneShape, bases<btConcaveShape> >
         ("btStaticPlaneShape", init<const btVector3&, btScalar>())
         .def_readonly("plane_normal", make_function(&btStaticPlaneShape::getPlaneNormal,
                       return_value_policy<copy_const_reference>()))
         .def_readonly("plane_constant", make_function(&btStaticPlaneShape::getPlaneConstant,
                       return_value_policy<return_by_value>()))
+    ;
+
+    // TODO: Implement tests
+    class_<btBU_Simplex1to4, bases<btPolyhedralConvexAabbCachingShape> >
+        ("btBU_Simplex1to4")
+        .def(init<const btVector3&>())
+        .def(init<const btVector3&, const btVector3&>())
+        .def(init<const btVector3&, const btVector3&, const btVector3&>())
+        .def(init<const btVector3&, const btVector3&, const btVector3&, const btVector3&>())
+        .def("reset", &btBU_Simplex1to4::reset)
+        .def("add_vertex", &btBU_Simplex1to4::addVertex)
+
     ;
 }
 

@@ -60,6 +60,31 @@ tuple btConvexPolyhedron_project(btConvexPolyhedron& self,
     return make_tuple(minProj, maxProj);
 }
 
+btConvexHullShape*
+make_btConvexHullShape_from_tuple(const tuple& points)
+{
+    btConvexHullShape *shape = new btConvexHullShape();
+    for(int i = 0; i < boost::python::len(points); i++)
+        shape->addPoint(extract<btVector3>(points[i]));
+    return shape;
+}
+
+btConvexHullShape*
+make_btConvexHullShape_from_list(const list& points)
+{
+    btConvexHullShape *shape = new btConvexHullShape();
+    for(int i = 0; i < boost::python::len(points); i++)
+        shape->addPoint(extract<btVector3>(points[i]));
+    return shape;
+}
+
+btConvexHullShape*
+make_btConvexHullShape_from_array(const btVector3Array& points)
+{
+    return new btConvexHullShape(&points[0][0], points.size());
+}
+
+
 btMinkowskiSumShape*
 make_btMinkowskiSumShape(btConvexShape& shapeA,
                          btConvexShape& shapeB)
@@ -277,13 +302,20 @@ void defineShapes()
     // TODO: Add tests
     class_<btConvexHullShape, bases<btPolyhedralConvexAabbCachingShape> >
         ("btConvexHullShape")
+        .def("__init__", make_constructor(make_btConvexHullShape_from_tuple))
+        .def("__init__", make_constructor(make_btConvexHullShape_from_list))
+        .def("__init__", make_constructor(make_btConvexHullShape_from_array))
         .def("add_point", &btConvexHullShape::addPoint,
              chullshape_addPoint_overloads())
         .def("get_unscaled_points",
              &btConvexHullShape::getUnscaledPoints_wrap,
              return_internal_reference<>())
+        .def_readonly("unscaled_points",
+                      make_function(&btConvexHullShape::getUnscaledPoints_wrap,
+                                    return_internal_reference<>()))
         .def("get_scaled_point", &btConvexHullShape::getScaledPoint)
         .def("get_num_points", &btConvexHullShape::getNumPoints)
+        .def_readonly("num_points", &btConvexHullShape::getNumPoints)
     ;
 
     // TODO: Add tests

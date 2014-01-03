@@ -3,6 +3,7 @@
 #define _btBoostDynamicsShapes_hpp
 
 #include <btBulletDynamicsCommon.h>
+#include <BulletCollision/CollisionShapes/btTriangleBuffer.h>
 #include <BulletCollision/CollisionShapes/btMaterial.h>
 #include <BulletCollision/CollisionShapes/btMultimaterialTriangleMeshShape.h>
 #include <BulletCollision/CollisionShapes/btMinkowskiSumShape.h>
@@ -88,6 +89,26 @@ make_btShapeHull(const btConvexShape& shape)
 {
     return new btShapeHull(&shape);
 }
+
+void
+btTriangleCallback_processTriangle(btTriangleCallback& cb,
+                                   btVector3Array& triangles,
+                                   int partId,
+                                   int triangleIndex)
+{
+    return cb.processTriangle(&triangles[0], partId, triangleIndex);
+}
+
+void
+btInternalTriangleIndexCallback_processTriangleIndex(btInternalTriangleIndexCallback& cb,
+                                                     btVector3Array& triangles,
+                                                     int partId,
+                                                     int triangleIndex)
+{
+    return cb.internalProcessTriangleIndex(&triangles[0], partId, triangleIndex);
+}
+
+typedef btAlignedObjectArray<btTriangle> btTriangleArray;
 
 void defineShapes()
 {
@@ -198,7 +219,7 @@ void defineShapes()
 
     // End base classes
 
-    // Some internal data passing classes
+    // Some internal data passing classes and interface implementations
 
     class_<btCompoundShapeChild>("btCompoundShapeChild")
         .def(self == other<btCompoundShapeChild>())
@@ -218,6 +239,29 @@ void defineShapes()
         .def(bt_ref_index_suite<btCompoundShapeChildArray>())
         .def("append", &btCompoundShapeChildArray::push_back)
     ;
+
+    class_<btTriangleCallback, boost::noncopyable>
+        ("btTriangleCallback", no_init)
+    ;
+
+    class_<btInternalTriangleIndexCallback, boost::noncopyable >
+        ("btInternalTriangleIndexCallback", no_init)
+    ;
+
+    class_<btTriangle>
+        ("btTriangle")
+        .def_readwrite("vertex0", &btTriangle::m_vertex0)
+        .def_readwrite("vertex1", &btTriangle::m_vertex1)
+        .def_readwrite("vertex2", &btTriangle::m_vertex2)
+        .def_readwrite("part_id", &btTriangle::m_partId)
+        .def_readwrite("triangle_index", &btTriangle::m_triangleIndex)
+    ;
+    class_<btTriangleArray>("btTriangleArray")
+    ;
+
+    class_<btTriangleBuffer, bases<btTriangleCallback> >
+        ("btTriangleBuffer")
+    ; // Will implement further as needed
 
     // End internal data passing
 
@@ -478,7 +522,6 @@ void defineShapes()
         .def(init<const btVector3&, const btVector3&, const btVector3&, const btVector3&>())
         .def("reset", &btBU_Simplex1to4::reset)
         .def("add_vertex", &btBU_Simplex1to4::addVertex)
-
     ;
 }
 

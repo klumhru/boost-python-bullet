@@ -77,3 +77,56 @@ class ConvexHullTestCase(unittest.TestCase):
         if hasattr(self, 'hull'):
             del self.hull
         del self.points
+
+
+class PolyhedralConvexAabbCachingTestCase(unittest.TestCase):
+    """
+    We use btConvexHullShape to implicitly test abstract base classes
+    """
+    def setUp(self):
+        # tolerance reflects the internal penetration tolerance
+        self.tolerance = bullet.btVector3(0.04, 0.04, 0.04)
+        # Describe a cube
+        self.points = [
+            bullet.btVector3(-1, -1, -1),
+            bullet.btVector3(-1, 1, -1),
+            bullet.btVector3(-1, -1, 1),
+            bullet.btVector3(-1, 1, 1),
+            bullet.btVector3(1, 1, 1),
+            bullet.btVector3(1, -1, 1),
+            bullet.btVector3(1, -1, -1),
+            bullet.btVector3(1, 1, -1)
+        ]
+        self.hull = bullet.btConvexHullShape(self.points)
+
+    def test_ctor(self):
+        pass
+
+    def test_get_nonvirtual_aabb(self):
+        aabb_min = bullet.btVector3()
+        aabb_max = bullet.btVector3()
+        trans = bullet.btTransform.identity
+        self.hull.recalc_local_aabb()
+        self.hull.get_nonvirtual_aabb(trans, aabb_min, aabb_max, 0.00)
+        self.assertEquals(aabb_min, self.points[0] - self.tolerance)
+        self.assertEquals(aabb_max, self.points[4] + self.tolerance)
+
+    def test_get_aabb(self):
+        aabb_min = bullet.btVector3()
+        aabb_max = bullet.btVector3()
+        trans = bullet.btTransform.identity
+        self.hull.recalc_local_aabb()
+        self.hull.get_aabb(trans, aabb_min, aabb_max)
+        self.assertEquals(aabb_min, self.points[0] - self.tolerance*2)
+        self.assertEquals(aabb_max, self.points[4] + self.tolerance*2)
+
+    def test_local_scaling(self):
+        scaling = bullet.btVector3(2, 2, 2)
+        self.hull.set_local_scaling(scaling)
+        self.points[0] *= scaling
+        self.points[4] *= scaling
+        self.test_get_aabb()
+
+    def tearDown(self):
+        del self.hull
+        del self.points

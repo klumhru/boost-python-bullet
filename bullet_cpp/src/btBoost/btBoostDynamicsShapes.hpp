@@ -110,6 +110,15 @@ btInternalTriangleIndexCallback_processTriangleIndex(btInternalTriangleIndexCall
 
 typedef btAlignedObjectArray<btTriangle> btTriangleArray;
 
+btUniformScalingShape*
+make_btUniformScalingShape(btConvexShape& convexChildShape,
+                           btScalar uniformScalingFactor)
+{
+    return new btUniformScalingShape(&convexChildShape,
+                                     uniformScalingFactor);
+}
+btConvexShape* (btUniformScalingShape::*btUniformScalingShape_getChildShape)() = &btUniformScalingShape::getChildShape;
+
 void defineShapes()
 {
     // Base classes, not for developer use
@@ -523,6 +532,19 @@ void defineShapes()
         .def("reset", &btBU_Simplex1to4::reset)
         .def("add_vertex", &btBU_Simplex1to4::addVertex)
     ;
+
+    // TODO: Investigate need for implementation of btTriangleMesh and other btStridingMeshInterface relying classes
+
+    class_<btUniformScalingShape, bases<btConvexShape> >
+        ("btUniformScalingShape", no_init)
+        .def("__init__", make_constructor(&make_btUniformScalingShape))
+        .def_readonly("child_shape",
+                      make_function(btUniformScalingShape_getChildShape,
+                                    return_value_policy<reference_existing_object>()))
+        .def("get_aabb_slow", &btUniformScalingShape::getAabbSlow)
+    ;
+
+
 }
 
 #endif // _btBoostDynamicsShapes_hpp

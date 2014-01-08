@@ -411,7 +411,7 @@ class CollisionShapeTestCase(unittest.TestCase):
         self.assertFalse(self.hull1.compound)
         self.assertTrue(self.shape1.compound)
 
-    def test_infinate(self):
+    def test_infinite(self):
         self.assertTrue(self.plane.infinite)
         self.assertFalse(self.hull1.infinite)
 

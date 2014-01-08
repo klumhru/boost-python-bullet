@@ -10,13 +10,6 @@ import unittest
 import bullet
 
 
-class CollisionShapeTestCase(unittest.TestCase):
-    def test_raise(self):
-        def _instantiate_abstract():
-            bullet.btCollisionShape()
-        self.assertRaises(_instantiate_abstract)
-
-
 class ConvexHullTestCase(unittest.TestCase):
     def setUp(self):
         # Describe a cube
@@ -120,13 +113,6 @@ class PolyhedralConvexAabbCachingTestCase(unittest.TestCase):
         self.hull.get_aabb(trans, aabb_min, aabb_max)
         self.assertEquals(aabb_min, self.points[0] - self.tolerance*2)
         self.assertEquals(aabb_max, self.points[4] + self.tolerance*2)
-
-    def test_local_scaling(self):
-        scaling = bullet.btVector3(2, 2, 2)
-        self.hull.set_local_scaling(scaling)
-        self.points[0] *= scaling
-        self.points[4] *= scaling
-        self.test_get_aabb()
 
     def tearDown(self):
         del self.hull
@@ -356,22 +342,107 @@ class ConvexTestCase(unittest.TestCase):
         self.assertEquals(self.v1, -self.v3)
         self.assertEquals(self.v2, self.v3)
 
+    def tearDown(self):
+        del self.hull
+        del self.points
+        del self.t1
+        del self.v3
+        del self.v1
+        del self.v2
+
+
+class CollisionShapeTestCase(unittest.TestCase):
+    """
+    We use different hull types to test functions and properties
+    on btCollisionShape as it is abstract
+    """
+    def setUp(self):
+        # Describe a cube
+        self.points = [
+            bullet.btVector3(-1, -1, -1),
+            bullet.btVector3(-1, 1, -1),
+            bullet.btVector3(-1, -1, 1),
+            bullet.btVector3(-1, 1, 1),
+            bullet.btVector3(1, 1, 1),
+            bullet.btVector3(1, -1, 1),
+            bullet.btVector3(1, -1, -1),
+            bullet.btVector3(1, 1, -1)
+        ]
+        self.hull1 = bullet.btConvexHullShape(self.points)
+        self.hull2 = bullet.btBox2dShape(self.points[4])
+        self.shape1 = bullet.btCompoundShape()
+        self.plane = bullet.btStaticPlaneShape(bullet.btVector3(0, 0, 0),
+                                               1.0)
+        self.v1 = bullet.btVector3(0, 0, 0)
+        self.v2 = bullet.btVector3(0, 0, 0)
+        self.v3 = bullet.btVector3(0, 0, 0)
+        self.t1 = bullet.btTransform.identity
+
+    def test_abstract(self):
+        def _instantiate_abstract():
+            bullet.btCollisionShape()
+        self.assertRaises(_instantiate_abstract)
+
+    def test_polyhedral(self):
+        self.assertTrue(self.hull1.polyhedral)
+        self.assertFalse(self.hull2.polyhedral)
+
+    def test_convex2d(self):
+        self.assertFalse(self.hull1.convex2d)
+        self.assertTrue(self.hull2.convex2d)
+
+    def test_convex(self):
+        self.assertTrue(self.hull1.convex)
+        self.assertFalse(self.plane.convex)
+
+    def test_concave(self):
+        self.assertTrue(self.plane.concave)
+        self.assertFalse(self.hull1.concave)
+
+    def test_margin(self):
+        self.hull1.margin = 0.01
+        self.assertEquals(self.hull1.margin, 0.01)
+        self.hull1.get_aabb(self.t1, self.v1, self.v2)
+        self.v3 = bullet.btVector3(1.05, 1.05, 1.05)
+        self.assertEquals(self.v1, -self.v3)
+        self.assertEquals(self.v2, self.v3)
+
+    def test_compound(self):
+        self.assertFalse(self.hull1.compound)
+        self.assertTrue(self.shape1.compound)
+
+    def test_infinate(self):
+        self.assertTrue(self.plane.infinite)
+        self.assertFalse(self.hull1.infinite)
+
+    def test_soft_body(self):
+        for s in (self.hull1, self.hull2, self.plane, self.shape1):
+            print(s)
+            self.assertFalse(s.soft_body)
+
+    def test_bounding_sphere(self):
+        radius = self.hull1.get_bounding_sphere(self.v1)
+        self.assertEquals(self.v1, bullet.btVector3(0, 0, 0))
+        self.v3 = bullet.btVector3(1.08, 1.08, 1.08)
+        self.assertEquals(radius, self.v3.length)
+
     def test_local_scaling(self):
         self.v1 = bullet.btVector3(2, 2, 2)
-        self.hull.set_local_scaling(self.v1)
-        self.assertEquals(self.hull.get_local_scaling(),
+        self.hull1.set_local_scaling(self.v1)
+        self.assertEquals(self.hull1.get_local_scaling(),
                           bullet.btVector3(2, 2, 2))
-        self.assertEquals(self.hull.local_scaling,
+        self.assertEquals(self.hull1.local_scaling,
                           bullet.btVector3(2, 2, 2))
-        self.hull.local_scaling = bullet.btVector3(3, 3, 3)
-        self.hull.recalc_local_aabb()
-        self.hull.get_aabb_slow(self.t1, self.v1, self.v2)
+        self.hull1.local_scaling = bullet.btVector3(3, 3, 3)
+        self.hull1.recalc_local_aabb()
+        self.hull1.get_aabb_slow(self.t1, self.v1, self.v2)
         self.v3 = bullet.btVector3(3.08, 3.08, 3.08)
         self.assertEquals(self.v1, -self.v3)
         self.assertEquals(self.v2, self.v3)
 
     def tearDown(self):
-        del self.hull
+        del self.hull1
+        del self.hull2
         del self.points
         del self.t1
         del self.v3

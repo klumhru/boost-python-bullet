@@ -260,6 +260,62 @@ class ConvexInternalTestCase(unittest.TestCase):
         vec = self.hull.implicit_shape_dimensions
         self.assertEquals(vec, bullet.btVector3(2, 2, 2))
 
+    def test_local_scaling(self):
+        self.hull.local_scaling = bullet.btVector3(2, 2, 2)
+        self.assertEquals(self.hull.local_scaling,
+                          bullet.btVector3(2, 2, 2))
+        self.hull.get_aabb_non_virtual(self.t1, self.v1, self.v2)
+        self.assertNotEquals(self.v1, self.v3)
+        self.v3 = bullet.btVector3(2.08, 2.08, 2.08)
+        self.assertEquals(self.v1, -self.v3)
+        self.assertEquals(self.v2, self.v3)
+
+    def test_margin(self):
+        self.hull.margin = 0.07
+        self.assertEquals(self.hull.margin, 0.07)
+        self.hull.get_aabb_non_virtual(self.t1, self.v1, self.v2)
+        self.v3 = bullet.btVector3(1.11, 1.11, 1.11)
+        self.assertEquals(self.v1, -self.v3)
+        self.assertEquals(self.v2, self.v3)
+
+    def test_aabb_non_virtual(self):
+        self.hull.get_aabb_non_virtual(self.t1, self.v1, self.v2)
+        self.v3 = bullet.btVector3(1.08, 1.08, 1.08)
+        self.assertEquals(self.v1, -self.v3)
+        self.assertEquals(self.v2, self.v3)
+
+    def tearDown(self):
+        del self.hull
+        del self.points
+        del self.t1
+        del self.v3
+        del self.v2
+        del self.v1
+
+
+class ConvexTestCase(unittest.TestCase):
+    """
+    We use btConvexHullShape to implicitly test abstract base classes
+    that it inherits and implements
+    """
+    def setUp(self):
+        # Describe a cube
+        self.points = [
+            bullet.btVector3(-1, -1, -1),
+            bullet.btVector3(-1, 1, -1),
+            bullet.btVector3(-1, -1, 1),
+            bullet.btVector3(-1, 1, 1),
+            bullet.btVector3(1, 1, 1),
+            bullet.btVector3(1, -1, 1),
+            bullet.btVector3(1, -1, -1),
+            bullet.btVector3(1, 1, -1)
+        ]
+        self.hull = bullet.btConvexHullShape(self.points)
+        self.v1 = bullet.btVector3(0, 0, 0)
+        self.v2 = bullet.btVector3(0, 0, 0)
+        self.v3 = bullet.btVector3(0, 0, 0)
+        self.t1 = bullet.btTransform.identity
+
     def test_get_supporting_vertex(self):
         """Runtime tests only"""
         self.v2 = self.hull.local_get_supporting_vertex_without_margin(self.v1)
@@ -274,6 +330,8 @@ class ConvexInternalTestCase(unittest.TestCase):
         self.assertEquals(self.v2, bullet.btVector3(-1, -1, -1))
         self.hull.local_get_support_vertex_non_virtual(self.v1)
         self.assertEquals(self.v2, self.v3)
+
+    def test_margin(self):
         margin = self.hull.get_margin_non_virtual()
         self.assertTrue(isinstance(margin, float))
         m2 = self.hull.get_margin_non_virtual()
@@ -292,22 +350,23 @@ class ConvexInternalTestCase(unittest.TestCase):
         self.assertEquals(_min, -1.04)
         self.assertEquals(_max, 1.04)
 
-    def test_local_scaling(self):
-        self.hull.local_scaling = bullet.btVector3(2, 2, 2)
-        self.assertEquals(self.hull.local_scaling,
-                          bullet.btVector3(2, 2, 2))
-        self.hull.get_aabb_non_virtual(self.t1, self.v1, self.v2)
-        self.assertNotEquals(self.v1, self.v3)
-        self.v3 = bullet.btVector3(2.08, 2.08, 2.08)
+    def test_get_aabb_slow(self):
+        self.hull.get_aabb_slow(self.t1, self.v1, self.v2)
+        self.v3 = bullet.btVector3(1.08, 1.08, 1.08)
         self.assertEquals(self.v1, -self.v3)
         self.assertEquals(self.v2, self.v3)
 
-    def test_margin(self):
-        self.hull.margin = 0.07
-        self.assertEquals(self.hull.margin, 0.07)
-        self.hull.get_aabb_non_virtual(self.t1, self.v1, self.v2)
-        self.assertNotEquals(self.v1, self.v3)
-        self.v3 = bullet.btVector3(1.11, 1.11, 1.11)
+    def test_local_scaling(self):
+        self.v1 = bullet.btVector3(2, 2, 2)
+        self.hull.set_local_scaling(self.v1)
+        self.assertEquals(self.hull.get_local_scaling(),
+                          bullet.btVector3(2, 2, 2))
+        self.assertEquals(self.hull.local_scaling,
+                          bullet.btVector3(2, 2, 2))
+        self.hull.local_scaling = bullet.btVector3(3, 3, 3)
+        self.hull.recalc_local_aabb()
+        self.hull.get_aabb_slow(self.t1, self.v1, self.v2)
+        self.v3 = bullet.btVector3(3.08, 3.08, 3.08)
         self.assertEquals(self.v1, -self.v3)
         self.assertEquals(self.v2, self.v3)
 
@@ -316,5 +375,5 @@ class ConvexInternalTestCase(unittest.TestCase):
         del self.points
         del self.t1
         del self.v3
-        del self.v2
         del self.v1
+        del self.v2

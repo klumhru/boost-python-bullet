@@ -144,6 +144,16 @@ make_btUniformScalingShape(btConvexShape& convexChildShape,
 }
 btConvexShape* (btUniformScalingShape::*btUniformScalingShape_getChildShape)() = &btUniformScalingShape::getChildShape;
 
+boost::python::tuple
+btConvexShape_project(btConvexShape& shape,
+                      const btTransform& trans,
+                      btVector3& vec)
+{
+    btScalar min, max;
+    shape.project(trans, vec, min, max);
+    return make_tuple(min, max);
+}
+
 void defineShapes()
 {
     // Base classes, not for developer use
@@ -181,7 +191,7 @@ void defineShapes()
 
     class_<btConvexShape, bases<btCollisionShape>, boost::noncopyable>
         ("btConvexShape", no_init)
-        .def("local_get_supporting_vertex",
+        .def("local_get_supporting_vertex_without_margin",
              &btConvexShape::localGetSupportingVertexWithoutMargin)
         .def("local_get_supporting_vertex_without_margin_non_virtual",
              &btConvexShape::localGetSupportVertexWithoutMarginNonVirtual)
@@ -191,11 +201,17 @@ void defineShapes()
              &btConvexShape::getMarginNonVirtual)
         .def("get_aabb_non_virtual",
              &btConvexShape::getAabbNonVirtual)
-        .def("project", &btConvexShape::project)
+        .def("project", btConvexShape_project)
         .def("batched_unit_vector_get_supporting_vertex_without_margin",
              &btConvexShape::batchedUnitVectorGetSupportingVertexWithoutMargin)
         .def("get_aabb_slow",
              &btConvexShape::getAabbSlow)
+        .def("set_local_scaling", &btConvexShape::setLocalScaling)
+        .def("get_local_scaling", &btConvexShape::getLocalScaling,
+             return_value_policy<copy_const_reference>())
+        .add_property("local_scaling", make_function(&btConvexShape::getLocalScaling,
+                      return_value_policy<copy_const_reference>()),
+                      &btConvexShape::setLocalScaling)
     ;
 
     class_<btConvexInternalShape, bases<btConvexShape>, boost::noncopyable>
@@ -235,7 +251,7 @@ void defineShapes()
         .def("get_nonvirtual_aabb",
              &btPolyhedralConvexAabbCachingShape::getNonvirtualAabb)
         .def("recalc_local_aabb",
-             &btPolyhedralConvexAabbCachingShape::getAabb)
+             &btPolyhedralConvexAabbCachingShape::recalcLocalAabb)
     ;
 
     class_<btConcaveShape, bases<btCollisionShape>, boost::noncopyable>

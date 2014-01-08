@@ -262,7 +262,7 @@ class ConvexInternalTestCase(unittest.TestCase):
 
     def test_get_supporting_vertex(self):
         """Runtime tests only"""
-        self.v2 = self.hull.local_get_supporting_vertex(self.v1)
+        self.v2 = self.hull.local_get_supporting_vertex_without_margin(self.v1)
         self.assertGreater(self.v1, self.v2)
         self.v2 = self.hull.local_get_supporting_vertex_without_margin(self.v1)
         self.v3 = self.v2

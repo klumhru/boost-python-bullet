@@ -154,8 +154,57 @@ btConvexShape_project(btConvexShape& shape,
     return make_tuple(min, max);
 }
 
+btScalar
+btCollisionShape_getBoundingSphere(btCollisionShape& shape,
+                                   btVector3& center)
+{
+    btScalar radius;
+    shape.getBoundingSphere(center, radius);
+    return radius;
+}
+
 void defineShapes()
 {
+    enum_<BroadphaseNativeTypes>
+        ("BroadphaseNativeTypes")
+        .value("BOX_SHAPE_PROXYTYPE",BOX_SHAPE_PROXYTYPE)
+        .value("TRIANGLE_SHAPE_PROXYTYPE", TRIANGLE_SHAPE_PROXYTYPE)
+        .value("TETRAHEDRAL_SHAPE_PROXYTYPE", TETRAHEDRAL_SHAPE_PROXYTYPE)
+        .value("CONVEX_TRIANGLEMESH_SHAPE_PROXYTYPE", CONVEX_TRIANGLEMESH_SHAPE_PROXYTYPE)
+        .value("CONVEX_HULL_SHAPE_PROXYTYPE", CONVEX_HULL_SHAPE_PROXYTYPE)
+        .value("CONVEX_POINT_CLOUD_SHAPE_PROXYTYPE", CONVEX_POINT_CLOUD_SHAPE_PROXYTYPE)
+        .value("CUSTOM_POLYHEDRAL_SHAPE_TYPE", CUSTOM_POLYHEDRAL_SHAPE_TYPE)
+        .value("IMPLICIT_CONVEX_SHAPES_START_HERE", IMPLICIT_CONVEX_SHAPES_START_HERE)
+        .value("SPHERE_SHAPE_PROXYTYPE", SPHERE_SHAPE_PROXYTYPE)
+        .value("MULTI_SPHERE_SHAPE_PROXYTYPE", MULTI_SPHERE_SHAPE_PROXYTYPE)
+        .value("CAPSULE_SHAPE_PROXYTYPE", CAPSULE_SHAPE_PROXYTYPE)
+        .value("CONE_SHAPE_PROXYTYPE", CONE_SHAPE_PROXYTYPE)
+        .value("CONVEX_SHAPE_PROXYTYPE", CONVEX_SHAPE_PROXYTYPE)
+        .value("CYLINDER_SHAPE_PROXYTYPE", CYLINDER_SHAPE_PROXYTYPE)
+        .value("UNIFORM_SCALING_SHAPE_PROXYTYPE", UNIFORM_SCALING_SHAPE_PROXYTYPE)
+        .value("MINKOWSKI_SUM_SHAPE_PROXYTYPE", MINKOWSKI_SUM_SHAPE_PROXYTYPE)
+        .value("MINKOWSKI_DIFFERENCE_SHAPE_PROXYTYPE", MINKOWSKI_DIFFERENCE_SHAPE_PROXYTYPE)
+        .value("BOX_2D_SHAPE_PROXYTYPE", BOX_2D_SHAPE_PROXYTYPE)
+        .value("CONVEX_2D_SHAPE_PROXYTYPE", CONVEX_2D_SHAPE_PROXYTYPE)
+        .value("CUSTOM_CONVEX_SHAPE_TYPE", CUSTOM_CONVEX_SHAPE_TYPE)
+        .value("CONCAVE_SHAPES_START_HERE", CONCAVE_SHAPES_START_HERE)
+        .value("TRIANGLE_MESH_SHAPE_PROXYTYPE", TRIANGLE_MESH_SHAPE_PROXYTYPE)
+        .value("SCALED_TRIANGLE_MESH_SHAPE_PROXYTYPE", SCALED_TRIANGLE_MESH_SHAPE_PROXYTYPE)
+        .value("FAST_CONCAVE_MESH_PROXYTYPE", FAST_CONCAVE_MESH_PROXYTYPE)
+        .value("TERRAIN_SHAPE_PROXYTYPE", TERRAIN_SHAPE_PROXYTYPE)
+        .value("GIMPACT_SHAPE_PROXYTYPE", GIMPACT_SHAPE_PROXYTYPE)
+        .value("MULTIMATERIAL_TRIANGLE_MESH_PROXYTYPE", MULTIMATERIAL_TRIANGLE_MESH_PROXYTYPE)
+        .value("EMPTY_SHAPE_PROXYTYPE", EMPTY_SHAPE_PROXYTYPE)
+        .value("STATIC_PLANE_PROXYTYPE", STATIC_PLANE_PROXYTYPE)
+        .value("CUSTOM_CONCAVE_SHAPE_TYPE", CUSTOM_CONCAVE_SHAPE_TYPE)
+        .value("CONCAVE_SHAPES_END_HERE", CONCAVE_SHAPES_END_HERE)
+        .value("COMPOUND_SHAPE_PROXYTYPE", COMPOUND_SHAPE_PROXYTYPE)
+        .value("SOFTBODY_SHAPE_PROXYTYPE", SOFTBODY_SHAPE_PROXYTYPE)
+        .value("HFFLUID_SHAPE_PROXYTYPE", HFFLUID_SHAPE_PROXYTYPE)
+        .value("HFFLUID_BUOYANT_CONVEX_SHAPE_PROXYTYPE", HFFLUID_BUOYANT_CONVEX_SHAPE_PROXYTYPE)
+        .value("INVALID_SHAPE_PROXYTYPE", INVALID_SHAPE_PROXYTYPE)
+        .value("MAX_BROADPHASE_COLLISION_TYPES",MAX_BROADPHASE_COLLISION_TYPES)
+    ;
     // Base classes, not for developer use
 
     class_<btCollisionShape, boost::noncopyable>
@@ -172,17 +221,20 @@ void defineShapes()
         .add_property("margin", &btCollisionShape::getMargin,
                       &btCollisionShape::setMargin)
         .def("get_aabb", &btCollisionShape::getAabb)
-        .def("get_bounding_sphere", &btCollisionShape::getBoundingSphere)
+        .def("get_bounding_sphere", make_function(btCollisionShape_getBoundingSphere,
+             return_value_policy<return_by_value>()))
         .def_readonly("angular_motion_disc",
                       &btCollisionShape::getAngularMotionDisc)
         .def("get_contact_breaking_threshold",
              &btCollisionShape::getContactBreakingThreshold)
         .def("calculate_temporal_aabb",
              &btCollisionShape::calculateTemporalAabb)
-        .add_property("local_scaling",
-                      make_function(&btCollisionShape::getLocalScaling,
-                                    return_value_policy<copy_const_reference>()),
-                      &btCollisionShape::setLocalScaling)
+        .def("set_local_scaling", &btConvexShape::setLocalScaling)
+        .def("get_local_scaling", &btConvexShape::getLocalScaling,
+             return_value_policy<copy_const_reference>())
+        .add_property("local_scaling", make_function(&btConvexShape::getLocalScaling,
+                      return_value_policy<copy_const_reference>()),
+                      &btConvexShape::setLocalScaling)
         .def("calculate_local_inertia", &btCollisionShape::calculateLocalInertia)
         .def("anisotropic_rolling_friction_direction",
              &btCollisionShape::getAnisotropicRollingFrictionDirection)
@@ -205,12 +257,6 @@ void defineShapes()
              &btConvexShape::batchedUnitVectorGetSupportingVertexWithoutMargin)
         .def("get_aabb_slow",
              &btConvexShape::getAabbSlow)
-        .def("set_local_scaling", &btConvexShape::setLocalScaling)
-        .def("get_local_scaling", &btConvexShape::getLocalScaling,
-             return_value_policy<copy_const_reference>())
-        .add_property("local_scaling", make_function(&btConvexShape::getLocalScaling,
-                      return_value_policy<copy_const_reference>()),
-                      &btConvexShape::setLocalScaling)
     ;
 
     class_<btConvexInternalShape, bases<btConvexShape>, boost::noncopyable>

@@ -172,7 +172,6 @@ void defineShapes()
         .add_property("margin", &btCollisionShape::getMargin,
                       &btCollisionShape::setMargin)
         .def("get_aabb", &btCollisionShape::getAabb)
-        .def_readonly("aabb", &btCollisionShape::getAabb)
         .def("get_bounding_sphere", &btCollisionShape::getBoundingSphere)
         .def_readonly("angular_motion_disc",
                       &btCollisionShape::getAngularMotionDisc)
@@ -591,8 +590,6 @@ void defineShapes()
                                     return_value_policy<reference_existing_object>()))
         .def("get_aabb_slow", &btUniformScalingShape::getAabbSlow)
     ;
-
-
 }
 
 #endif // _btBoostDynamicsShapes_hpp

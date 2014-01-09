@@ -49,10 +49,14 @@ void defineTransform()
              return_value_policy<copy_const_reference>())
         .def("set_origin", &btTransform::setOrigin)
         // Properties
-        .add_property("basis", make_function(get_basis_ref,
-                      return_internal_reference<>()))
-        .add_property("origin", make_function(get_origin_ref,
-                      return_internal_reference<>()))
+        .add_property("basis",
+                      make_function(get_basis_ref,
+                                    return_internal_reference<>()),
+                      &btTransform::setBasis)
+        .add_property("origin",
+                      make_function(get_origin_ref,
+                                    return_internal_reference<>()),
+                      &btTransform::setOrigin)
         .add_static_property("identity",
             make_function(btTransform::getIdentity,
                           return_value_policy<copy_const_reference>()))

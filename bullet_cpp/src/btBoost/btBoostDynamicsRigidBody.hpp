@@ -9,9 +9,10 @@
 
 using namespace boost::python;
 
-bool
-(btCollisionObject::*btCollisionObject_hasAnisotropicFriction)(int) const
-    = &btCollisionObject::hasAnisotropicFriction;
+
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(btCollisionObject_hasAnisotropicFriction_overloads,
+                                       btCollisionObject::hasAnisotropicFriction,
+                                       0, 1)
 
 btCollisionShape*
 (btCollisionObject::*btCollisionObject_getCollisionShape)()
@@ -102,7 +103,8 @@ void defineRigidBody()
              return_value_policy<copy_const_reference>()),
              &btCollisionObject::setAnisotropicFriction)
         .def("has_anisotropic_friction",
-             btCollisionObject_hasAnisotropicFriction)
+             &btCollisionObject::hasAnisotropicFriction,
+             btCollisionObject_hasAnisotropicFriction_overloads())
         .add_property("contact_processing_threshold",
                       make_function(&btCollisionObject::getContactProcessingThreshold,
                                     return_value_policy<return_by_value>()),

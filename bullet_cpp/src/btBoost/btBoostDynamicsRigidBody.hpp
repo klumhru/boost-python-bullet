@@ -18,9 +18,19 @@ btCollisionShape*
 (btCollisionObject::*btCollisionObject_getCollisionShape)()
     = &btCollisionObject::getCollisionShape;
 
+void btCollisionObject_setCollisionShape(btCollisionObject& obj,
+                                         btCollisionShape& shape)
+{
+    return obj.setCollisionShape(&shape);
+}
+
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(btCollisionObject_activate_overloads,
                                        btCollisionObject::activate,
                                        0, 1)
+
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(btCollisionObject_setAnisotropicFriction_overloads,
+                                       btCollisionObject::setAnisotropicFriction,
+                                       1, 2)
 
 btTransform&
 (btCollisionObject::*btCollisionObject_getWorldTransform)()
@@ -98,10 +108,12 @@ void defineRigidBody()
         ("btCollisionObject")
         .def_readonly("merges_simulation_islands",
              &btCollisionObject::mergesSimulationIslands)
-        .add_property("anisotropic_friction",
-             make_function(&btCollisionObject::getAnisotropicFriction,
-             return_value_policy<copy_const_reference>()),
-             &btCollisionObject::setAnisotropicFriction)
+        .def("get_anisotropic_friction",
+             &btCollisionObject::getAnisotropicFriction,
+             return_value_policy<copy_const_reference>())
+        .def("set_anisotropic_friction",
+             &btCollisionObject::setAnisotropicFriction,
+             btCollisionObject_setAnisotropicFriction_overloads())
         .def("has_anisotropic_friction",
              &btCollisionObject::hasAnisotropicFriction,
              btCollisionObject_hasAnisotropicFriction_overloads())
@@ -113,14 +125,15 @@ void defineRigidBody()
                       &btCollisionObject::isStaticObject)
         .def_readonly("kinematic_object",
                       &btCollisionObject::isKinematicObject)
-        .def_readonly("static_or_kinematic",
+        .def_readonly("static_or_kinematic_object",
                       &btCollisionObject::isStaticOrKinematicObject)
         .def_readonly("has_contact_response",
                       &btCollisionObject::hasContactResponse)
         .add_property("collision_shape",
                       make_function(btCollisionObject_getCollisionShape,
-                                    return_value_policy<reference_existing_object>()),
-                      &btCollisionObject::setCollisionShape)
+                                    return_internal_reference<>()),
+                      make_function(btCollisionObject_setCollisionShape,
+                                    with_custodian_and_ward<1, 2>()))
         // Internal API calls not implemented:
         // * internalGetExtensionPointer
         // * internalSetExtensionPointer
@@ -158,7 +171,8 @@ void defineRigidBody()
         .add_property("broadphase_handle",
                       make_function(btCollisionShape_getBroadphaseHandle,
                                     return_internal_reference<>()),
-                      &btCollisionObject_setBroadphaseHandle)
+                      make_function(btCollisionObject_setBroadphaseHandle,
+                                    with_custodian_and_ward<1, 2>()))
         .add_property("interpolation_world_transform",
                       make_function(btCollisionObject_getInterpolationWorldTransform,
                                     return_internal_reference<>()),

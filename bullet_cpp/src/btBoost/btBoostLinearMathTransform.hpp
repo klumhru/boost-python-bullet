@@ -26,6 +26,7 @@ void defineTransform()
 {
     class_<btTransform>("btTransform")
         // Constructors
+        .def(init<const btTransform&>())
         .def(init<const btQuaternion&>())
         .def(init<const btQuaternion&, const btVector3&>())
         .def(init<const btMatrix3x3&>())

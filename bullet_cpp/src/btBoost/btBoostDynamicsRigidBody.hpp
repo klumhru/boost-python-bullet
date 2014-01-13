@@ -105,6 +105,30 @@ public:
     }
 };
 
+class btRigidBodyWrap
+{
+public:
+    static boost::shared_ptr<btRigidBody>
+    create(btScalar mass,
+           btMotionState& motionState,
+           btCollisionShape& collisionShape,
+           const btVector3& inertia)
+    {
+        return boost::shared_ptr<btRigidBody>(
+            new btRigidBody(mass,
+                            &motionState,
+                            &collisionShape,
+                            inertia)
+        );
+    }
+
+    static btRigidBody*
+    upcast(btCollisionObject& obj)
+    {
+        return btRigidBody::upcast(&obj);
+    }
+};
+
 void defineRigidBody()
 {
     class_<btCollisionObjectArray>("btCollisionObjectArray")
@@ -289,9 +313,30 @@ void defineRigidBody()
     ;
 
     class_<btRigidBody, bases<btCollisionObject> >
-        ("btRigidBody",
-         init<const btRigidBody::btRigidBodyConstructionInfo&>())
-
+        ("btRigidBody", init<const btRigidBody::btRigidBodyConstructionInfo&>())
+        .def("__init__", make_constructor(btRigidBodyWrap::create))
+        .def("upcast", btRigidBodyWrap::upcast,
+             return_internal_reference<>())
+        .staticmethod("upcast")
+        .def("predict_integrated_transform",
+             &btRigidBody::predictIntegratedTransform)
+        .def("save_kinematic_state", &btRigidBody::saveKinematicState)
+        .def("apply_gravity", &btRigidBody::applyGravity)
+        .add_property("gravity", make_function(&btRigidBody::getGravity,
+                      return_value_policy<copy_const_reference>()),
+                      &btRigidBody::setGravity)
+        .def("set_damping", &btRigidBody::setDamping)
+        .def_readonly("angular_damping", &btRigidBody::getAngularDamping)
+        .def_readonly("linear_damping", &btRigidBody::getLinearDamping)
+        .def_readonly("linear_sleeping_threshold", &btRigidBody::getLinearSleepingThreshold)
+        .def("set_mass_props", &btRigidBody::setMassProps)
+        .add_property("linear_factor", make_function(&btRigidBody::getLinearFactor,
+                      return_value_policy<copy_const_reference>()),
+                      &btRigidBody::setLinearFactor)
+        .def_readonly("inv_mass", &btRigidBody::getInvMass)
+        .def_readonly("inv_inertia_tensor_world",
+                      make_function(&btRigidBody::getInvInertiaTensorWorld,
+                                    return_value_policy<copy_const_reference>()))
     ;
 }
 

@@ -3,6 +3,7 @@
 #define _btBoostDynamicsRigidBody_hpp
 
 #include <boost/python.hpp>
+#include <boost/shared_ptr.hpp>
 #include <btBulletDynamicsCommon.h>
 #include <btBulletCollisionCommon.h>
 #include "btBoostLinearMathAlignedObjectArray.hpp"
@@ -63,13 +64,49 @@ bool btCollisionObject_checkCollideWith(btCollisionObject& lv,
     return lv.checkCollideWith(&rv);
 }
 
+class btRigidBodyConstruciontInfoWrap
+{
+public:
+    static btCollisionShape*
+    getCollisionShape(btRigidBody::btRigidBodyConstructionInfo& info)
+    {
+        return info.m_collisionShape;
+    }
+    static void
+    setCollisionShape(btRigidBody::btRigidBodyConstructionInfo& info,
+                      btCollisionShape& shape)
+    {
+        info.m_collisionShape = &shape;
+    }
+
+    static btMotionState*
+    getMotionState(btRigidBody::btRigidBodyConstructionInfo& info)
+    {
+        return info.m_motionState;
+    }
+    static void
+    setMotionState(btRigidBody::btRigidBodyConstructionInfo& info,
+                   btMotionState& state)
+    {
+        info.m_motionState = &state;
+    }
+
+    static boost::shared_ptr<btRigidBody::btRigidBodyConstructionInfo>
+    create(btScalar mass,
+           btMotionState& state,
+           btCollisionShape& shape,
+           const btVector3& inertia)
+    {
+        return boost::shared_ptr<btRigidBody::btRigidBodyConstructionInfo>(
+            new btRigidBody::btRigidBodyConstructionInfo(
+                mass, &state, &shape, inertia
+            )
+        );
+    }
+};
+
 void defineRigidBody()
 {
-    enum_<btRigidBodyFlags>("btRigidBodyFlags")
-        .value("BT_DISABLE_WORLD_GRAVITY", BT_DISABLE_WORLD_GRAVITY)
-        .value("BT_ENABLE_GYROPSCOPIC_FORCE", BT_ENABLE_GYROPSCOPIC_FORCE)
-    ;
-
     class_<btCollisionObjectArray>("btCollisionObjectArray")
         .def(init<btCollisionObjectArray>())
         .def(bt_ref_index_suite<btCollisionObjectArray>())
@@ -215,6 +252,46 @@ void defineRigidBody()
                       &btCollisionObject::getUpdateRevisionInternal)
         .def("check_collide_with",
              &btCollisionObject_checkCollideWith)
+    ;
+
+    enum_<btRigidBodyFlags>("btRigidBodyFlags")
+        .value("BT_DISABLE_WORLD_GRAVITY", BT_DISABLE_WORLD_GRAVITY)
+        .value("BT_ENABLE_GYROPSCOPIC_FORCE", BT_ENABLE_GYROPSCOPIC_FORCE)
+    ;
+
+    class_<btRigidBody::btRigidBodyConstructionInfo>
+        ("btRigidBodyConstructionInfo", no_init)
+        .def("__init__", make_constructor(btRigidBodyConstruciontInfoWrap::create))
+        .add_property("motion_state",
+                      make_function(btRigidBodyConstruciontInfoWrap::getMotionState,
+                                    return_internal_reference<>()),
+                      make_function(btRigidBodyConstruciontInfoWrap::setMotionState,
+                                    with_custodian_and_ward<1, 2>()))
+        .add_property("collision_shape",
+                      make_function(btRigidBodyConstruciontInfoWrap::getCollisionShape,
+                                    return_internal_reference<>()),
+                      make_function(btRigidBodyConstruciontInfoWrap::setCollisionShape,
+                                    with_custodian_and_ward<1, 2>()))
+        .def_readwrite("mass", &btRigidBody::btRigidBodyConstructionInfo::m_mass)
+        .def_readwrite("start_world_transform", &btRigidBody::btRigidBodyConstructionInfo::m_startWorldTransform)
+        .def_readwrite("local_inertia", &btRigidBody::btRigidBodyConstructionInfo::m_localInertia)
+        .def_readwrite("linear_damping", &btRigidBody::btRigidBodyConstructionInfo::m_linearDamping)
+        .def_readwrite("angular_damping", &btRigidBody::btRigidBodyConstructionInfo::m_angularDamping)
+        .def_readwrite("friction", &btRigidBody::btRigidBodyConstructionInfo::m_friction)
+        .def_readwrite("rolling_friction", &btRigidBody::btRigidBodyConstructionInfo::m_rollingFriction)
+        .def_readwrite("linear_sleeping_threshold", &btRigidBody::btRigidBodyConstructionInfo::m_linearSleepingThreshold)
+        .def_readwrite("angular_sleeping_threshold", &btRigidBody::btRigidBodyConstructionInfo::m_angularSleepingThreshold)
+        .def_readwrite("additional_damping", &btRigidBody::btRigidBodyConstructionInfo::m_additionalDamping)
+        .def_readwrite("additional_damping_factor", &btRigidBody::btRigidBodyConstructionInfo::m_additionalDampingFactor)
+        .def_readwrite("additional_linear_damping_threshold_sqr", &btRigidBody::btRigidBodyConstructionInfo::m_additionalLinearDampingThresholdSqr)
+        .def_readwrite("additional_angular_damping_threshold_sqr", &btRigidBody::btRigidBodyConstructionInfo::m_additionalAngularDampingThresholdSqr)
+        .def_readwrite("additional_angular_damping_factor", &btRigidBody::btRigidBodyConstructionInfo::m_additionalAngularDampingFactor)
+    ;
+
+    class_<btRigidBody, bases<btCollisionObject> >
+        ("btRigidBody",
+         init<const btRigidBody::btRigidBodyConstructionInfo&>())
+
     ;
 }
 

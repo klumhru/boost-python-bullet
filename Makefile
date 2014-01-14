@@ -19,3 +19,8 @@ dev: build-mp install test
 
 build-mp:
 	CC='ccache gcc' python setup.py build --force -j
+
+test-hello:
+	nosetests test_hello
+
+dev-hello: build-mp install test-hello

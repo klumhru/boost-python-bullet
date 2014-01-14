@@ -63,6 +63,7 @@ void defineMatrix3x3()
              return_value_policy<return_by_value>())
         .add_static_property("identity", make_function(&btMatrix3x3::getIdentity,
                              return_value_policy<copy_const_reference>()))
+        .def("set_identity", &btMatrix3x3::setIdentity)
         ;
 }
 

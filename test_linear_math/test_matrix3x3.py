@@ -16,10 +16,10 @@ class TestMatrix3x3(unittest.TestCase):
         self.v1 = tuple(float(i) for i in range(0, 9))
         self.v2 = tuple(2*i for i in self.v1)
         self.v_sqr = tuple(math.pow(i, 2) for i in self.v1)
-        self.a = bullet.btMatrix3x3()
-        self.b = bullet.btMatrix3x3()
-        self.c = bullet.btMatrix3x3()
-        self.d = bullet.btMatrix3x3()
+        self.a = bullet.btMatrix3x3.identity
+        self.b = bullet.btMatrix3x3.identity
+        self.c = bullet.btMatrix3x3.identity
+        self.d = bullet.btMatrix3x3.identity
 
     def test_constructors(self):
         self.a = bullet.btMatrix3x3(bullet.btQuaternion.identity)
@@ -27,6 +27,18 @@ class TestMatrix3x3(unittest.TestCase):
         self.c = bullet.btMatrix3x3(0, 0, 0,
                                     0, 0, 0,
                                     1, 1, 1)
+
+    def test_identity(self):
+        self.a = bullet.btMatrix3x3.identity
+        self.b = bullet.btMatrix3x3(1, 0, 0,
+                                    0, 1, 0,
+                                    0, 0, 1)
+        self.assertEquals(self.a, self.b)
+        self.a = bullet.btMatrix3x3(0, 0, 1,
+                                    1, 0, 1,
+                                    1, 1, 1)
+        self.a.set_identity()
+        self.assertEquals(self.a, self.b)
 
     def test_str(self):
         self.a = bullet.btMatrix3x3(0, 0, 0,

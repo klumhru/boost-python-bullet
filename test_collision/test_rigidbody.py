@@ -43,6 +43,8 @@ class RigidBodyDataMixin(object):
         self.body1 = bullet.btRigidBody(self.info)
         self.body2 = bullet.btRigidBody(1.0, self.motion_state2,
                                         self.hull, self.v1)
+        self.m1 = bullet.btMatrix3x3.identity
+        self.m2 = bullet.btMatrix3x3.identity
 
     def tearDown(self):
         del self.body1
@@ -58,6 +60,8 @@ class RigidBodyDataMixin(object):
         del self.v1
         del self.v2
         del self.v3
+        del self.m1
+        del self.m2
 
 
 class RigidBodyCInfoTestCase(RigidBodyDataMixin,
@@ -178,3 +182,114 @@ class RigidBodyTestCase(RigidBodyDataMixin,
         self.body1.set_damping(0.1, 0.2)
         self.assertEquals(self.body1.linear_damping, 0.1)
         self.assertEquals(self.body1.angular_damping, 0.2)
+        # Damping should cap at 1.0
+        self.body1.set_damping(20, 20)
+        self.assertEquals(self.body1.linear_damping, 1.0)
+        self.assertEquals(self.body1.angular_damping, 1.0)
+
+    def test_linear_sleeping_threshold(self):
+        self.info.linear_sleeping_threshold = 0.2
+        self.body2 = bullet.btRigidBody(self.info)
+        self.assertEquals(self.body2.linear_sleeping_threshold,
+                          self.info.linear_sleeping_threshold)
+
+    def test_linear_factor(self):
+        self.v1.x = 1
+        self.body1.linear_factor = self.v1
+        self.assertEquals(self.body1.linear_factor, self.v1)
+        self.v1.y = 1
+        self.assertNotEquals(self.body1.linear_factor, self.v1)
+
+    def test_mass_props(self):
+        self.v1 = bullet.btVector3(1, 0, 0)
+        self.body1.set_mass_props(10.0, self.v1)
+        self.assertEquals(self.body1.inv_mass, 1.0/10.0)
+
+    def test_inertia_tensor(self):
+        self.body1.update_inertia_tensor()
+        self.m1 = self.body1.get_inv_inertia_tensor_world()
+        self.assertEquals(self.m1, self.m2)
+
+    def test_forces(self):
+        self.body1.center_of_mass_transform = self.t1
+        self.v1.y = 10.0
+        self.body1.apply_central_force(self.v1)
+        self.v1 = self.body1.get_total_force()
+        self.v2 = self.body1.get_total_torque()
+        self.assertEquals(self.v2, self.v3)
+        self.v3.y = 10.0
+        self.assertEquals(self.v1, self.v3)
+        self.body1.clear_forces()
+        self.v3.y = 0.0
+        self.v1 = self.body1.get_total_force()
+        self.v2 = self.body1.get_total_torque()
+        self.assertEquals(self.v1, self.v3)
+        self.assertEquals(self.v2, self.v3)
+
+    def test_apply_force(self):
+        self.v1.y = 10.0
+        self.v2.y = 20.0
+        self.body2.apply_force(self.v1, self.v3)
+        self.body2.apply_torque(self.v2)
+        self.v1 = self.body2.get_total_force()
+        self.v2 = self.body2.get_total_torque()
+        self.assertEquals(self.v1, bullet.btVector3(0, 10, 0))
+        self.assertEquals(self.v2, bullet.btVector3(0, 20, 0))
+
+    def test_inv_inertia_diag_local(self):
+        self.v1.x = 10.0
+        self.body1.inv_inertia_diag_local = self.v1
+        self.assertEquals(self.body1.inv_inertia_diag_local, self.v1)
+
+    def test_sleeping_thresholds(self):
+        lin, ang = 0.1, 0.2
+        self.body1.set_sleeping_thresholds(lin, ang)
+        self.assertEquals(self.body1.linear_sleeping_threshold, lin)
+        self.assertEquals(self.body1.angular_sleeping_threshold, ang)
+
+    def test_impulses(self):
+        self.v1.y = 10
+        self.v2.y = 20
+        self.body1.apply_central_impulse(self.v1)
+        self.body1.apply_torque_impulse(self.v2)
+        self.body2.apply_impulse(self.v1, self.v3)
+        self.assertEquals(self.body1.linear_velocity, self.v1)
+        self.assertEquals(self.body1.angular_velocity, self.v2)
+
+    def test_center_of_mass(self):
+        self.body1.center_of_mass_transform = self.t1
+        self.assertEquals(self.body1.center_of_mass_transform, self.t1)
+        self.v2 = self.body1.get_center_of_mass_position()
+        self.v3 = self.body1.center_of_mass_position
+        print(self.v3)
+        self.assertEquals(self.v2, self.v3)
+
+        def _set_position():
+            self.body1.center_of_mass_position = self.v1
+        self.assertRaises(AttributeError, _set_position)
+
+    def test_velocities(self):
+        self.v1.y = 10
+        self.body1.linear_velocity = self.v1
+        self.assertEquals(self.body1.linear_velocity, self.v1)
+        self.v2.y = 20
+        self.body1.angular_velocity = self.v2
+        self.assertEquals(self.body1.angular_velocity, self.v2)
+        self.v3.x = 1
+        self.v1 = self.body1.get_linear_velocity_in_local_point(self.v3)
+        self.assertEquals(self.v1, self.body1.linear_velocity +
+                          self.body1.angular_velocity.cross(self.v3))
+
+    def test_translate(self):
+        self.v1.z = 10
+        self.body1.translate(self.v1)
+        self.assertEquals(self.body1.world_transform.origin, self.v1)
+
+    def test_aabb(self):
+        self.body1.get_aabb(self.v1, self.v2)
+        self.v3 = bullet.btVector3(1, 1, 1)
+        self.assertEquals(self.v1, -self.v3)
+        self.assertEquals(self.v2, self.v3)
+
+    def test_broadphase_proxy(self):
+        proxy = self.body1.broadphase_

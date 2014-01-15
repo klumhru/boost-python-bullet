@@ -127,7 +127,43 @@ public:
     {
         return btRigidBody::upcast(&obj);
     }
+
+    static const btTransform&
+    getCenterOfMassTransform(btRigidBody& body)
+    {
+        btTransform t(body.getCenterOfMassTransform());
+        return t;
+    }
+
+    static const btVector3&
+    getCenterOfMassPosition(btRigidBody& body)
+    {
+        btVector3 v(body.getCenterOfMassPosition());
+        return v;
+    }
+
+    static const btVector3&
+    getLinearVelocity(btRigidBody& body)
+    {
+        btVector3 v(body.getLinearVelocity());
+        return v;
+    }
+
+    static const btVector3&
+    getAngularVelocity(btRigidBody& body)
+    {
+        btVector3 v(body.getAngularVelocity());
+        return v;
+    }
+
+    void
+    setBroadPhaseProxy(btRigidBody& body, btBroadphaseProxy& proxy)
+    {
+        body.setNewBroadphaseProxy(&proxy);
+    }
 };
+
+typedef btBroadphaseProxy* (btRigidBody::*get_pointer);
 
 void defineRigidBody()
 {
@@ -329,14 +365,69 @@ void defineRigidBody()
         .def_readonly("angular_damping", &btRigidBody::getAngularDamping)
         .def_readonly("linear_damping", &btRigidBody::getLinearDamping)
         .def_readonly("linear_sleeping_threshold", &btRigidBody::getLinearSleepingThreshold)
-        .def("set_mass_props", &btRigidBody::setMassProps)
+        .def_readonly("angular_sleeping_threshold", &btRigidBody::getAngularSleepingThreshold)
         .add_property("linear_factor", make_function(&btRigidBody::getLinearFactor,
                       return_value_policy<copy_const_reference>()),
                       &btRigidBody::setLinearFactor)
+        .def("set_mass_props", &btRigidBody::setMassProps)
         .def_readonly("inv_mass", &btRigidBody::getInvMass)
+        // TODO: Add test for inv_inertia_tensor_world
         .def_readonly("inv_inertia_tensor_world",
                       make_function(&btRigidBody::getInvInertiaTensorWorld,
                                     return_value_policy<copy_const_reference>()))
+        .def("get_inv_inertia_tensor_world",
+             &btRigidBody::getInvInertiaTensorWorld,
+             return_value_policy<copy_const_reference>())
+        .def("integrate_velocities", &btRigidBody::integrateVelocities)
+        .def("apply_central_force", &btRigidBody::applyCentralForce)
+        .def("get_total_force", &btRigidBody::getTotalForce,
+             return_value_policy<copy_const_reference>())
+        .def("get_total_torque", &btRigidBody::getTotalTorque,
+             return_value_policy<copy_const_reference>())
+        .def("get_inv_inertia_diag_local", &btRigidBody::getInvInertiaDiagLocal,
+             return_value_policy<copy_const_reference>())
+        .add_property("inv_inertia_diag_local", make_function(&btRigidBody::getInvInertiaDiagLocal,
+                      return_value_policy<copy_const_reference>()),
+                      &btRigidBody::setInvInertiaDiagLocal)
+        .def("set_sleeping_thresholds", &btRigidBody::setSleepingThresholds)
+        .def("apply_torque", &btRigidBody::applyTorque)
+        .def("apply_force", &btRigidBody::applyForce)
+        .def("apply_central_impulse", &btRigidBody::applyCentralImpulse)
+        .def("apply_torque_impulse", &btRigidBody::applyTorqueImpulse)
+        .def("apply_impulse", &btRigidBody::applyImpulse)
+        .def("clear_forces", &btRigidBody::clearForces)
+        .def("update_inertia_tensor", &btRigidBody::updateInertiaTensor)
+        .add_property("center_of_mass_transform",
+                      make_function(&btRigidBody::getCenterOfMassTransform,
+                      return_internal_reference<>()),
+                      &btRigidBody::setCenterOfMassTransform)
+        .def("set_center_of_mass_transform",
+             &btRigidBody::setCenterOfMassTransform)
+        .def("get_center_of_mass_transform",
+             &btRigidBody::getCenterOfMassTransform,
+             return_internal_reference<>())
+        .add_property("center_of_mass_position",
+                      make_function(&btRigidBody::getCenterOfMassPosition,
+                      return_internal_reference<>()))
+        .def("get_center_of_mass_position",
+             &btRigidBody::getCenterOfMassPosition,
+             return_internal_reference<>())
+        .add_property("angular_velocity", make_function(&btRigidBody::getAngularVelocity,
+                      return_internal_reference<>()),
+                      &btRigidBody::setAngularVelocity)
+        .add_property("linear_velocity", make_function(&btRigidBody::getLinearVelocity,
+                      return_internal_reference<>()),
+                      &btRigidBody::setLinearVelocity)
+        .def("get_linear_velocity_in_local_point",
+             &btRigidBody::getVelocityInLocalPoint,
+             return_value_policy<return_by_value>())
+        .def("translate", &btRigidBody::translate)
+        .def("get_aabb", &btRigidBody::getAabb)
+        .add_property("broadphase_proxy",
+                      make_function(get_pointer(&btRigidBody::getBroadPhaseProxy),
+                                    return_internal_reference<>()),
+                      make_function(btRigidBodyWrap::setBroadPhaseProxy,
+                                    with_custodian_and_ward<1, 2>()))
     ;
 }
 

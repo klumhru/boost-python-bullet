@@ -131,39 +131,54 @@ public:
     static const btTransform&
     getCenterOfMassTransform(btRigidBody& body)
     {
-        btTransform t(body.getCenterOfMassTransform());
-        return t;
+        return body.getCenterOfMassTransform();
     }
 
     static const btVector3&
     getCenterOfMassPosition(btRigidBody& body)
     {
-        btVector3 v(body.getCenterOfMassPosition());
-        return v;
+        return body.getCenterOfMassPosition();
     }
 
     static const btVector3&
     getLinearVelocity(btRigidBody& body)
     {
-        btVector3 v(body.getLinearVelocity());
-        return v;
+        return body.getLinearVelocity();
     }
 
     static const btVector3&
     getAngularVelocity(btRigidBody& body)
     {
-        btVector3 v(body.getAngularVelocity());
-        return v;
+        return body.getAngularVelocity();
     }
 
-    void
+    static void
     setBroadPhaseProxy(btRigidBody& body, btBroadphaseProxy& proxy)
     {
         body.setNewBroadphaseProxy(&proxy);
     }
+    static void
+    setMotionState(btRigidBody& body, btMotionState& motionState)
+    {
+        body.setMotionState(&motionState);
+    }
+
+    static void
+    setAngularFactorFloat(btRigidBody& body, btScalar val)
+    {
+        body.setAngularFactor(val);
+    }
+    static void
+    setAngularFactorVec(btRigidBody& body, const btVector3& vec)
+    {
+        body.setAngularFactor(vec);
+    }
 };
 
-typedef btBroadphaseProxy* (btRigidBody::*get_pointer);
+btBroadphaseProxy*
+(btRigidBody::*_rb_get_bp_pointer)() = &btRigidBody::getBroadphaseProxy;
+btMotionState*
+(btRigidBody::*_rb_get_ms_pointer)() = &btRigidBody::getMotionState;
 
 void defineRigidBody()
 {
@@ -423,11 +438,28 @@ void defineRigidBody()
              return_value_policy<return_by_value>())
         .def("translate", &btRigidBody::translate)
         .def("get_aabb", &btRigidBody::getAabb)
+        // TODO: test broadphase proxy in integration tests
         .add_property("broadphase_proxy",
-                      make_function(get_pointer(&btRigidBody::getBroadPhaseProxy),
+                      make_function(_rb_get_bp_pointer,
                                     return_internal_reference<>()),
                       make_function(btRigidBodyWrap::setBroadPhaseProxy,
                                     with_custodian_and_ward<1, 2>()))
+        .add_property("motion_state",
+                      make_function(_rb_get_ms_pointer,
+                                    return_internal_reference<>()),
+                      make_function(btRigidBodyWrap::setMotionState,
+                                    with_custodian_and_ward<1, 2>()))
+        .def("set_angular_factor",
+             btRigidBodyWrap::setAngularFactorFloat)
+        .add_property("angular_factor", make_function(&btRigidBody::getAngularFactor,
+                      return_value_policy<copy_const_reference>()),
+                      btRigidBodyWrap::setAngularFactorVec)
+        .def_readonly("in_world", &btRigidBody::isInWorld)
+        // TODO: Add constraint support when btTypedConstraint is ready
+        .add_property("flags", &btRigidBody::getFlags, &btRigidBody::setFlags)
+        .def("compute_gyroscopic_force",
+             &btRigidBody::computeGyroscopicForce,
+             return_value_policy<return_by_value>())
     ;
 }
 

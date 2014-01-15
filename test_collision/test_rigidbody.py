@@ -292,4 +292,27 @@ class RigidBodyTestCase(RigidBodyDataMixin,
         self.assertEquals(self.v2, self.v3)
 
     def test_broadphase_proxy(self):
-        proxy = self.body1.broadphase_
+        # TODO: Further testing needed when integrated in a world
+        self.body1.broadphase_proxy
+
+    def test_motion_state(self):
+        state = self.body1.motion_state
+        self.body1.motion_state = state
+        self.assertIsNotNone(self.body1.motion_state)
+
+    def test_angular_factor(self):
+        self.v1.x = 1.0
+        self.body1.angular_factor = self.v1
+        self.assertEquals(self.body1.angular_factor, self.v1)
+        self.body1.set_angular_factor(1.0)
+        self.v2 = bullet.btVector3(1, 1, 1)
+        self.assertEquals(self.body1.angular_factor, self.v2)
+
+    def test_in_world(self):
+        self.assertFalse(self.body1.in_world)
+
+    def test_flags(self):
+        self.body1.flags = 1
+        self.assertEquals(self.body1.flags, 1)
+        self.body1.flags = 0
+        self.assertEquals(self.body1.flags, 0)

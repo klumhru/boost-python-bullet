@@ -132,6 +132,7 @@ Current classes that are fully wrapped (and tested):
 * btRigidBody
   * Includes btRigidBodyConstructionInfo
   * Some functions are not yet wrapped as they rely on not-yet-implemented classes and functions
+
 Bullet internals
 ====
 Internals used for data transfer and internal logic are not exposed except where neccesary, and then without property implementations, and only limited constructors (or none at all). btDbvtNode and btDbvt are examples of this.

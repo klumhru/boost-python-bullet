@@ -127,11 +127,11 @@ Current classes that are fully wrapped (and tested):
   * The default collision world
   * Implementation is limited while work on supporting objects is ongoing
 * btCollisionShape
-  * Shapes are having tests implemented and will be added to complete list when ready
-  * btConvexHullShape
-    * btPolyhedralConvexAabbCachingShape (implicit tests)
-    * btbtConvexPolyhedron (implicit tests)
-    * Still missing implicit tests for some base classes, these are WIP
+  * All shapes except complex mesh interface shapes are wrapped and tested
+* btCollisionObject
+* btRigidBody
+  * Includes btRigidBodyConstructionInfo
+  * Some functions are not yet wrapped as they rely on not-yet-implemented classes and functions
 Bullet internals
 ====
 Internals used for data transfer and internal logic are not exposed except where neccesary, and then without property implementations, and only limited constructors (or none at all). btDbvtNode and btDbvt are examples of this.

@@ -2,7 +2,7 @@ boost-python-bullet - Work in Progress!
 ===================
 Trello: https://trello.com/b/pHVzGLi4/boost-python-bullet
 
-This is a thin boost wrapper on top of Bullet Physics SDK (http://bulletphysics.org) - Note that I am not the owner of Bullet Physics SDK, nor am I affiliated with them. Bullet Physics SDK is under a separate license. See ./bullet_cpp/BulletLicense.txt for reference. There are some minor alterations in the source, specifically anonumous enums in classes are named so that they can be wrapped in a constructive way.
+This is a thin boost wrapper on top of Bullet Physics SDK (http://bulletphysics.org) - Note that I am not the owner of Bullet Physics SDK, nor am I affiliated with them. Bullet Physics SDK is under a separate license. See ./bullet_cpp/BulletLicense.txt for reference. There are some minor alterations in the source, specifically anonymous enums in classes are named so that they can be wrapped in a constructive way.
 
 Feel free to contribute pull requests or post issues for discussion. Issues asking for ETAs on components will be closed without answers.
 

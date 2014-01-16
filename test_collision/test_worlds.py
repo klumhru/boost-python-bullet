@@ -10,7 +10,7 @@ import unittest
 import bullet
 
 
-class DiscreteDynamicsWorldTestCase(unittest.TestCase):
+class WorldTestDataMixin(object):
     def setUp(self):
         self.solver = bullet.btSequentialImpulseConstraintSolver()
         self.cinfo = bullet.btDefaultCollisionConstructionInfo()
@@ -18,13 +18,27 @@ class DiscreteDynamicsWorldTestCase(unittest.TestCase):
             bullet.btDefaultCollisionConfiguration(self.cinfo)
         self.broadphase = bullet.btDbvtBroadphase()
         self.dispatcher = bullet.btCollisionDispatcher(self.collision_config)
+        self.gravity = bullet.btVector3(0, -9.8, 0)
+        self.time_step = 1.0/60
+
+    def tearDown(self):
+        del self.dispatcher
+        del self.broadphase
+        del self.collision_config
+        del self.cinfo
+        del self.solver
+
+
+class DiscreteDynamicsWorldTestCase(WorldTestDataMixin,
+                                    unittest.TestCase):
+    def setUp(self):
+        super(DiscreteDynamicsWorldTestCase, self).setUp()
         self.world = bullet.btDiscreteDynamicsWorld(
             self.dispatcher,
             self.broadphase,
             self.solver,
             self.collision_config
         )
-        self.time_step = 1.0/60
 
     def test_ctor(self):
         pass
@@ -39,18 +53,14 @@ class DiscreteDynamicsWorldTestCase(unittest.TestCase):
             self.world.synchronize_motion_states()
 
     def test_gravity(self):
-        self.world.set_gravity(bullet.btVector3(0, -9.8, 0))
-        gravity = self.world.get_gravity()
-        self.assertEquals(bullet.btVector3(0, -9.8, 0),
-                          gravity)
+        self.world.set_gravity(self.gravity)
+        self.assertEquals(self.world.gravity, self.gravity)
         self.world.gravity = bullet.btVector3(0, 0, 0)
         self.assertEquals(self.world.get_gravity(),
+                          bullet.btVector3(0, 0, 0))
+        self.assertEquals(self.world.gravity,
                           bullet.btVector3(0, 0, 0))
 
     def tearDown(self):
         del self.world
-        del self.dispatcher
-        del self.broadphase
-        del self.collision_config
-        del self.cinfo
-        del self.solver
+        super(DiscreteDynamicsWorldTestCase, self).tearDown()

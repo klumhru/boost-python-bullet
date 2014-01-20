@@ -20,13 +20,41 @@ class WorldTestDataMixin(object):
         self.dispatcher = bullet.btCollisionDispatcher(self.collision_config)
         self.gravity = bullet.btVector3(0, -9.8, 0)
         self.time_step = 1.0/60
+        self.collision_object = bullet.btCollisionObject()
+        self.v1 = bullet.btVector3(0, 0, 0)
 
     def tearDown(self):
+        del self.v1
+        del self.collision_object
         del self.dispatcher
         del self.broadphase
         del self.collision_config
         del self.cinfo
         del self.solver
+
+
+class LocalRayResultTestCase(WorldTestDataMixin,
+                             unittest.TestCase):
+    def setUp(self):
+        super(LocalRayResultTestCase, self).setUp()
+        self.shape_info = bullet.LocalShapeInfo()
+        self.shape_info.shape_part = 0
+        self.shape_info.triangle_index = 0
+        self.ray_result = bullet.LocalRayResult(self.collision_object,
+                                                self.shape_info,
+                                                self.v1,
+                                                0.1)
+
+    def test_ctor(self):
+        pass
+
+    def test_collision_object(self):
+        self.assertIsNotNone(self.ray_result.collision_object)
+
+    def tearDown(self):
+        del self.ray_result
+        del self.shape_info
+        super(LocalRayResultTestCase, self).tearDown()
 
 
 class CollisionWorldTestCase(WorldTestDataMixin,
@@ -59,14 +87,19 @@ class CollisionWorldTestCase(WorldTestDataMixin,
 
     def test_pair_cache(self):
         self.assertIsNotNone(self.world.pair_cache)
-        self.broadphase = None
-        self.assertIsNone(self.broadphase)
-        self.broadphase = self.world.pair_cache
+        self.broadphase = self.world.broadphase
         self.assertIsNotNone(self.broadphase)
 
         def _should_raise():
-            self.world.pair_cache = self.broadphase
+            self.world.pair_cache = None
         self.assertRaises(AttributeError, _should_raise)
+
+    # TODO: Enable this after we can add/remove objects
+#    def test_update_single_aabb(self):
+#        self.world.update_single_aabb(self.collision_object)
+
+    def test_update_aabbs(self):
+        self.world.update_aabbs()
 
     def test_compute_overlapping_pairs(self):
         self.world.compute_overlapping_pairs()

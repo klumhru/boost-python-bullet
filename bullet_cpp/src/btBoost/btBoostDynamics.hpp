@@ -9,6 +9,7 @@
 #include "btBoostDynamicsDiscreteDynamicsWorld.hpp"
 #include "btBoostDynamicsShapes.hpp"
 #include "btBoostDynamicsRigidBody.hpp"
+#include "btBoostCollisionOverLappingPairCache.hpp"
 
 void defineDynamics()
 {
@@ -19,6 +20,7 @@ void defineDynamics()
     defineDiscreteDynamicsWorld();
     defineShapes();
     defineRigidBody();
+    defineOverlappingPairCaches();
 }
 
 #endif // _btBoostDynamics_hpp

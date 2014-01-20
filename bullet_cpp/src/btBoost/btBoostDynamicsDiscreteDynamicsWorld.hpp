@@ -3,36 +3,106 @@
 #define _btBoostDynamicsDiscreteDynamicsWorld_hpp
 
 #include <boost/python.hpp>
+#include <boost/shared_ptr.hpp>
 #include <btBulletDynamicsCommon.h>
+#include "btBoostCollisionWorldWrappers.hpp"
 
-using namespace boost::python;
+const btBroadphaseInterface*
+    (btCollisionWorld::*btCollisionWorld_getBroadphase_const)() const
+    = &btCollisionWorld::getBroadphase;
+btBroadphaseInterface*
+    (btCollisionWorld::*btCollisionWorld_getBroadphase)()
+    = &btCollisionWorld::getBroadphase;
 
-btDiscreteDynamicsWorld*
-init_btDiscreteDynamicsWorld(
-    btDispatcher& dispatcher,
-    btBroadphaseInterface& pairCache,
-    btConstraintSolver& solver,
-    btCollisionConfiguration& config
-) {
-    return new btDiscreteDynamicsWorld(&dispatcher,
-                                       &pairCache,
-                                       &solver,
-                                       &config);
-}
+const btDispatcher*
+    (btCollisionWorld::*btCollisionWorld_getDispatcher_const)() const
+    = &btCollisionWorld::getDispatcher;
+btDispatcher*
+    (btCollisionWorld::*btCollisionWorld_getDispatcher)()
+    = &btCollisionWorld::getDispatcher;
 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(ddw_step_overloads,
                                        stepSimulation,
                                        1, 3);
 
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(ddw_addCollisionObject_overloads,
+                                       addCollisionObject,
+                                       1, 3);
+
 void defineDiscreteDynamicsWorld()
 {
-    class_<btDynamicsWorld, boost::noncopyable>("btDynamicsWorld", no_init);
+
+
+
+    class_<btCollisionWorld::LocalShapeInfo>("LocalShapeInfo")
+        .def_readwrite("shape_part",
+                       &btCollisionWorld::LocalShapeInfo::m_shapePart)
+        .def_readwrite("triangle_index",
+                       &btCollisionWorld::LocalShapeInfo::m_triangleIndex)
+    ;
+
+    class_<btCollisionWorld::LocalRayResult, boost::noncopyable>
+        ("LocalRayResult", no_init)
+        .def("__init__", make_constructor(&LocalRayResultWrap::init))
+        .add_property("collision_object",
+                      make_function(&LocalRayResultWrap::getCollisionObject,
+                                    return_internal_reference<>()))
+        .def_readwrite("local_shape_info",
+                       &btCollisionWorld::LocalRayResult::m_localShapeInfo)
+        .def_readwrite("hit_normal_local",
+                       &btCollisionWorld::LocalRayResult::m_hitNormalLocal)
+        .def_readwrite("hit_fraction",
+                       &btCollisionWorld::LocalRayResult::m_hitFraction)
+    ;
+
+    class_<RayResultCallbackWrap, boost::noncopyable>
+        ("RayResultCallback")
+        .def_readwrite("closest_hit_fraction",
+                       &RayResultCallbackWrap::m_closestHitFraction)
+        .add_property("collision_object",
+                      make_function(RayResultCallbackWrap::getCollisionObject,
+                                    return_internal_reference<>()),
+                      make_function(RayResultCallbackWrap::setCollisionObject,
+                                    with_custodian_and_ward<1, 2>()))
+        .def_readwrite("collision_filter_group",
+                       &RayResultCallbackWrap::m_collisionFilterGroup)
+        .def_readwrite("collision_filter_mask",
+                       &RayResultCallbackWrap::m_collisionFilterMask)
+        .def_readwrite("flags", &RayResultCallbackWrap::m_flags)
+        .add_property("has_hit", &RayResultCallbackWrap::hasHit)
+        .def("needs_collision", RayResultCallbackWrap::needsCollision)
+        .def("add_single_result", &RayResultCallbackWrap::addSingleResult)
+    ;
+
+    class_<btCollisionWorld, boost::noncopyable>
+        ("btCollisionWorld", no_init)
+        .def("__init__", make_constructor(&btCollisionWorldWrap::init))
+        .def("step_simulation", &btDiscreteDynamicsWorld::stepSimulation,
+             ddw_step_overloads())
+        .add_property("broadphase",
+                      make_function(btCollisionWorld_getBroadphase,
+                                    return_internal_reference<>()),
+                      make_function(btCollisionWorldWrap::setBroadphase,
+                                    with_custodian_and_ward<1, 2>()))
+        .add_property("dispatcher",
+                      make_function(btCollisionWorld_getDispatcher_const,
+                                    return_internal_reference<>()))
+        .add_property("pair_cache",
+                      make_function(&btCollisionWorld::getPairCache,
+                                    return_internal_reference<>()))
+        .def("update_single_aabb", btCollisionWorldWrap::updateSingleAabb)
+        .def("update_aabbs", &btCollisionWorld::updateAabbs)
+        .def("compute_overlapping_pairs",
+             &btCollisionWorld::computeOverlappingPairs)
+
+    ;
+
+    class_<btDynamicsWorld, bases<btCollisionWorld>, boost::noncopyable>
+        ("btDynamicsWorld", no_init);
 
     class_<btDiscreteDynamicsWorld, bases<btDynamicsWorld>, boost::noncopyable>
         ("btDiscreteDynamicsWorld", no_init)
-        .def("__init__", make_constructor(&init_btDiscreteDynamicsWorld))
-        .def("step_simulation", &btDiscreteDynamicsWorld::stepSimulation,
-             ddw_step_overloads())
+        .def("__init__", make_constructor(&btDiscreteDynamicsWorldWrap::init))
         .def("synchronize_motion_states",
              &btDiscreteDynamicsWorld::synchronizeMotionStates)
         .def("set_gravity",
@@ -40,8 +110,14 @@ void defineDiscreteDynamicsWorld()
         .def("get_gravity",
              &btDiscreteDynamicsWorld::getGravity)
         .add_property("gravity",
-                      &btDiscreteDynamicsWorld::getGravity,
+                      make_function(&btDiscreteDynamicsWorld::getGravity,
+                                    return_value_policy<return_by_value>()),
                       &btDiscreteDynamicsWorld::setGravity)
+        .def("add_collision_object",
+             btDiscreteDynamicsWorldWrap::addCollisionObject,
+             with_custodian_and_ward<1, 2>())
+        .def("remove_collision_object",
+             btDiscreteDynamicsWorldWrap::removeCollisionObject)
     ;
 }
 

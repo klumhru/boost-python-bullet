@@ -29,6 +29,53 @@ class WorldTestDataMixin(object):
         del self.solver
 
 
+class CollisionWorldTestCase(WorldTestDataMixin,
+                             unittest.TestCase):
+    def setUp(self):
+        super(CollisionWorldTestCase, self).setUp()
+        self.world = bullet.btCollisionWorld(self.dispatcher,
+                                             self.broadphase,
+                                             self.collision_config)
+
+    def test_ctor(self):
+        pass
+
+    def test_broadphase(self):
+        self.world.broadphase = self.broadphase
+        self.broadphase = self.world.broadphase
+        self.assertIsNotNone(self.world.broadphase)
+        self.assertIsNotNone(self.broadphase)
+
+    def test_dispatcher(self):
+        self.assertIsNotNone(self.world.dispatcher)
+        self.dispatcher = None
+        self.assertIsNone(self.dispatcher)
+        self.dispacher = self.world.dispatcher
+        self.assertIsNotNone(self.dispacher)
+
+        def _should_raise():
+            self.world.dispatcher = self.dispacher
+        self.assertRaises(AttributeError, _should_raise)
+
+    def test_pair_cache(self):
+        self.assertIsNotNone(self.world.pair_cache)
+        self.broadphase = None
+        self.assertIsNone(self.broadphase)
+        self.broadphase = self.world.pair_cache
+        self.assertIsNotNone(self.broadphase)
+
+        def _should_raise():
+            self.world.pair_cache = self.broadphase
+        self.assertRaises(AttributeError, _should_raise)
+
+    def test_compute_overlapping_pairs(self):
+        self.world.compute_overlapping_pairs()
+
+    def tearDown(self):
+        del self.world
+        super(CollisionWorldTestCase, self).tearDown()
+
+
 class DiscreteDynamicsWorldTestCase(WorldTestDataMixin,
                                     unittest.TestCase):
     def setUp(self):

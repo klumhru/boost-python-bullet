@@ -74,6 +74,20 @@ void defineDiscreteDynamicsWorld()
         .def("add_single_result", &RayResultCallbackWrap::addSingleResult)
     ;
 
+    class_<btCollisionWorld::ClosestRayResultCallback,
+           bases<RayResultCallback>, boost::noncopyable>
+        ("ClosestRayResultCallback",
+         init<const btVector3&, const btVector3&>())
+        .def_readwrite("ray_from_world",
+                       &btCollisionWorld::ClosestRayResultCallback::m_rayFromWorld)
+        .def_readwrite("ray_to_world",
+                       &btCollisionWorld::ClosestRayResultCallback::m_rayToWorld)
+        .def_readwrite("hit_normal_world",
+                       &btCollisionWorld::ClosestRayResultCallback::m_rayNormalWorld)
+        .def_readwrite("hit_point_world",
+                       &btCollisionWorld::ClosestRayResultCallback::m_hitNormalWorld)
+    ;
+
     class_<btCollisionWorld, boost::noncopyable>
         ("btCollisionWorld", no_init)
         .def("__init__", make_constructor(&btCollisionWorldWrap::init))

@@ -75,7 +75,7 @@ void defineDiscreteDynamicsWorld()
     ;
 
     class_<btCollisionWorld::ClosestRayResultCallback,
-           bases<RayResultCallback>, boost::noncopyable>
+           bases<btCollisionWorld::RayResultCallback>, boost::noncopyable>
         ("ClosestRayResultCallback",
          init<const btVector3&, const btVector3&>())
         .def_readwrite("ray_from_world",
@@ -83,9 +83,26 @@ void defineDiscreteDynamicsWorld()
         .def_readwrite("ray_to_world",
                        &btCollisionWorld::ClosestRayResultCallback::m_rayToWorld)
         .def_readwrite("hit_normal_world",
-                       &btCollisionWorld::ClosestRayResultCallback::m_rayNormalWorld)
-        .def_readwrite("hit_point_world",
                        &btCollisionWorld::ClosestRayResultCallback::m_hitNormalWorld)
+        .def_readwrite("hit_point_world",
+                       &btCollisionWorld::ClosestRayResultCallback::m_hitPointWorld)
+    ;
+
+    class_<btCollisionWorld::AllHitsRayResultCallback,
+           bases<btCollisionWorld::RayResultCallback>, boost::noncopyable>
+        ("AllHitsRayResultCallback",
+         init<const btVector3&, const btVector3&>())
+        // TODO: Wrap m_collisionObjects
+        .def_readwrite("ray_from_world",
+                       &btCollisionWorld::AllHitsRayResultCallback::m_rayFromWorld)
+        .def_readwrite("ray_to_world",
+                       &btCollisionWorld::AllHitsRayResultCallback::m_rayToWorld)
+        .def_readwrite("hit_normal_world",
+                       &btCollisionWorld::AllHitsRayResultCallback::m_hitNormalWorld)
+        .def_readwrite("hit_point_world",
+                       &btCollisionWorld::AllHitsRayResultCallback::m_hitPointWorld)
+        .def_readwrite("hit_fractions",
+                       &btCollisionWorld::AllHitsRayResultCallback::m_hitFractions)
     ;
 
     class_<btCollisionWorld, boost::noncopyable>

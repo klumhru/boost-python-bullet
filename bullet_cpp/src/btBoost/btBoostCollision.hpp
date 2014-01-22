@@ -2,8 +2,8 @@
 #ifndef _btBoostCollision_hpp
 #define _btBoostCollision_hpp
 
-#include "Collision/DiscreteDynamicsWorld.hpp"
-#include "Collision/OverlappingPairCache.hpp"
+#include <btBoost/Collision/DiscreteDynamicsWorld.hpp>
+#include <btBoost/Collision/OverlappingPairCache.hpp>
 
 void defineCollision()
 {

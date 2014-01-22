@@ -2,15 +2,15 @@
 #ifndef _btBoostLinearMath_hpp
 #define _btBoostLinearMath_hpp
 
-#include "btBoostLinearMathScalar.hpp"
-#include "btBoostLinearMathVector3.hpp"
-#include "btBoostLinearMathQuadWord.hpp"
-#include "btBoostLinearMathQuaternion.hpp"
-#include "btBoostLinearMathMatrix3x3.hpp"
-#include "btBoostLinearMathTransform.hpp"
-#include "btBoostLinearMathTransformUtil.hpp"
-#include "btBoostLinearMathMotionState.hpp"
-#include "btBoostLinearMathAlignedObjectArray.hpp"
+#include <btBoost/LinearMath/Scalar.hpp>
+#include <btBoost/LinearMath/Vector3.hpp>
+#include <btBoost/LinearMath/QuadWord.hpp>
+#include <btBoost/LinearMath/Quaternion.hpp>
+#include <btBoost/LinearMath/Matrix3x3.hpp>
+#include <btBoost/LinearMath/Transform.hpp>
+#include <btBoost/LinearMath/TransformUtil.hpp>
+#include <btBoost/LinearMath/MotionState.hpp>
+#include <btBoost/LinearMath/AlignedObjectArray.hpp>
 
 void defineLinearMath()
 {

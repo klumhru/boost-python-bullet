@@ -5,8 +5,8 @@
 #include <boost/python.hpp>
 #include <LinearMath/btTransform.h>
 #include <iostream>
-#include "btBoostLinearMathVector3.hpp"
-#include "btBoostLinearMathQuaternion.hpp"
+#include <btBoost/LinearMath/Vector3.hpp>
+#include <btBoost/LinearMath/Quaternion.hpp>
 
 using namespace boost::python;
 using namespace std;

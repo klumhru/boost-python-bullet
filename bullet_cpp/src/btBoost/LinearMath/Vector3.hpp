@@ -5,7 +5,7 @@
 #include <iostream>
 #include <boost/python.hpp>
 #include <LinearMath/btVector3.h>
-#include "btBoostLinearMathAlignedObjectArray.hpp"
+#include <btBoost/LinearMath/AlignedObjectArray.hpp>
 
 using namespace boost::python;
 using namespace std;

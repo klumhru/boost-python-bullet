@@ -2,12 +2,12 @@
 #ifndef _btBoostDynamics_hpp
 #define _btBoostDynamics_hpp
 
-#include "btBoostDynamicsDbvtBroadphase.hpp"
-#include "btBoostDynamicsDefaultCollisionConfiguration.hpp"
-#include "btBoostDynamicsCollisionDispatcher.hpp"
-#include "btBoostDynamicsSequentialImpulseConstraintSolver.hpp"
-#include "btBoostDynamicsShapes.hpp"
-#include "btBoostDynamicsRigidBody.hpp"
+#include <btBoost/Dynamics/DbvtBroadphase.hpp>
+#include <btBoost/Dynamics/DefaultCollisionConfiguration.hpp>
+#include <btBoost/Dynamics/CollisionDispatcher.hpp>
+#include <btBoost/Dynamics/SequentialImpulseConstraintSolver.hpp>
+#include <btBoost/Dynamics/Shapes.hpp>
+#include <btBoost/Dynamics/RigidBody.hpp>
 
 void defineDynamics()
 {

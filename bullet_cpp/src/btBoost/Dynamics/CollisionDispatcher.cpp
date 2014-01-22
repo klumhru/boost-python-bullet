@@ -1,5 +1,10 @@
 #include "CollisionDispatcher.hpp"
 
+#include <boost/python.hpp>
+#include <boost/shared_ptr.hpp>
+
+using namespace boost::python;
+
 btCollisionDispatcher*
 make_CollisionDispatcher(btCollisionConfiguration& config)
 {

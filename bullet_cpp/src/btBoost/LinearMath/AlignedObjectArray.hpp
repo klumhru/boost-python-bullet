@@ -1,6 +1,6 @@
-// File: btBoostLinearMathAlignedObjectArray.hpp
-#ifndef _btBoostLinearMathAlignedObjectArray_hpp
-#define _btBoostLinearMathAlignedObjectArray_hpp
+// File: AlignedObjectArray.hpp
+#ifndef _AlignedObjectArray_hpp
+#define _AlignedObjectArray_hpp
 
 #include <boost/python/suite/indexing/indexing_suite.hpp>
 #include <boost/python/suite/indexing/vector_indexing_suite.hpp>
@@ -186,28 +186,6 @@ typedef btAlignedObjectArray<int> btIntArray;
 typedef btAlignedObjectArray<unsigned int> btUIntArray;
 typedef btAlignedObjectArray<btScalar> btScalarArray;
 
-void definePrimitiveArrays()
-{
-    // TODO: Needs tests
-    class_<btIntArray>("btIntArray")
-        .def(init<btIntArray>())
-        .def(bt_ref_index_suite<btIntArray>())
-        .def("append", &btIntArray::push_back)
-    ;
+void definePrimitiveArrays();
 
-    // TODO: Needs tests
-    class_<btUIntArray>("btUIntArray")
-        .def(init<btUIntArray>())
-        .def(bt_ref_index_suite<btUIntArray>())
-        .def("append", &btUIntArray::push_back)
-    ;
-
-    // TODO: Needs tests
-    class_<btScalarArray>("btScalarArray")
-        .def(init<btScalarArray>())
-        .def(bt_ref_index_suite<btScalarArray>())
-        .def("append", &btScalarArray::push_back)
-    ;
-}
-
-#endif // _btBoostLinearMathAlignedObjectArray_hpp
+#endif // _AlignedObjectArray_hpp

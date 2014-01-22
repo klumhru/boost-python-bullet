@@ -2,13 +2,6 @@
 #ifndef _btBoostCollision_hpp
 #define _btBoostCollision_hpp
 
-#include <btBoost/Collision/DiscreteDynamicsWorld.hpp>
-#include <btBoost/Collision/OverlappingPairCache.hpp>
-
-void defineCollision()
-{
-    defineDiscreteDynamicsWorld();
-    defineOverlappingPairCaches();
-}
+void defineCollision();
 
 #endif // _btBoostCollision_hpp

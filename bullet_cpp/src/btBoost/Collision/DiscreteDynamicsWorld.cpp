@@ -1,5 +1,12 @@
 #include "DiscreteDynamicsWorld.hpp"
 
+#include <boost/python.hpp>
+#include <boost/shared_ptr.hpp>
+#include <btBulletDynamicsCommon.h>
+#include <btBoost/Collision/CollisionWorldWrappers.hpp>
+
+using namespace boost::python;
+
 const btBroadphaseInterface*
     (btCollisionWorld::*btCollisionWorld_getBroadphase_const)() const
     = &btCollisionWorld::getBroadphase;

@@ -1,5 +1,9 @@
 #include "DbvtBroadphase.hpp"
 
+#include <boost/python.hpp>
+
+using namespace boost::python;
+
 void btDbvtBroadphase_collide(btDbvtBroadphase& self, btDispatcher& dispatcher)
 {
     self.collide(&dispatcher);

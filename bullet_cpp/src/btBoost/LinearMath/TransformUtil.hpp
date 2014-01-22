@@ -1,49 +1,19 @@
-// File: btBoostLinearMathTransformUtil.hpp
-#ifndef _btBoostLinearMathTransformUtil_hpp
-#define _btBoostLinearMathTransformUtil_hpp
+// File: TransformUtil.hpp
+#ifndef _TransformUtil_hpp
+#define _TransformUtil_hpp
 
-#include <boost/python.hpp>
 #include <LinearMath/btTransformUtil.h>
 
-using namespace boost::python;
-
 btScalar
-calculate_diff_axis_angle_quaternion(const btQuaternion& orn0,const btQuaternion& orn1,btVector3& axis)
-{
-    btScalar angle;
-    btTransformUtil::calculateDiffAxisAngleQuaternion(
-        orn0, orn1, axis, angle
-    );
-    return angle;
-}
+calculate_diff_axis_angle_quaternion(const btQuaternion& orn0,
+                                     const btQuaternion& orn1,
+                                     btVector3& axis);
 
 btScalar
 calculate_diff_axis_angle(const btTransform& t1,
                           const btTransform& t2,
-                          btVector3& axis)
-{
-    btScalar angle;
-    btTransformUtil::calculateDiffAxisAngle(t1, t2, axis, angle);
-    return angle;
-}
+                          btVector3& axis);
 
-void defineTransformUtil()
-{
-    class_<btTransformUtil>("btTransformUtil")
-        .def("integrate_transform", btTransformUtil::integrateTransform)
-        .staticmethod("integrate_transform")
-        .def("calculate_velocity_quaternion",
-             btTransformUtil::calculateVelocityQuaternion)
-        .staticmethod("calculate_velocity_quaternion")
-        .def("calculate_diff_axis_angle_quaternion",
-             calculate_diff_axis_angle_quaternion)
-        .staticmethod("calculate_diff_axis_angle_quaternion")
-        .def("calculate_velocity", btTransformUtil::calculateVelocity)
-        .staticmethod("calculate_velocity")
-        .def("calculate_diff_axis_angle",
-             calculate_diff_axis_angle)
-        .staticmethod("calculate_diff_axis_angle")
-    ;
-}
+void defineTransformUtil();
 
-#endif // _btBoostLinearMathTransformUtil_hpp
+#endif // _TransformUtil_hpp

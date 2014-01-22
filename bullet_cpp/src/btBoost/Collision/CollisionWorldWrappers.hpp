@@ -38,6 +38,60 @@ public:
     {
         world.updateSingleAabb(&obj);
     }
+
+    static void
+    rayTestSingle(const btTransform& rayFromTrans,
+                  const btTransform& rayToTrans,
+                  btCollisionObject& collisionObject,
+                  const btCollisionShape& collisionShape,
+                  const btTransform& colObjWorldTransform,
+                  btCollisionWorld::RayResultCallback& resultCallback)
+    {
+        btCollisionWorld::rayTestSingle(rayFromTrans,
+                                        rayToTrans,
+                                        &collisionObject,
+                                        &collisionShape,
+                                        colObjWorldTransform,
+                                        resultCallback);
+    }
+
+    static void
+    objectQuerySingle(const btConvexShape& castShape,
+                      const btTransform& rayFromTrans,
+                      const btTransform& rayToTrans,
+                      btCollisionObject& collisionObject,
+                      const btCollisionShape& collisionShape,
+                      const btTransform& colObjWorldTransform,
+                      btCollisionWorld::ConvexResultCallback& resultCallback,
+                      btScalar allowedPenetration)
+    {
+        btCollisionWorld::objectQuerySingle(&castShape,
+                                            rayFromTrans,
+                                            rayToTrans,
+                                            &collisionObject,
+                                            &collisionShape,
+                                            colObjWorldTransform,
+                                            resultCallback,
+                                            allowedPenetration);
+    }
+
+    static void
+    addCollisionObject(btCollisionWorld& world,
+                       btCollisionObject& obj,
+                       short int collisionFilterGroup,
+                       short int collisionFilterMask)
+    {
+        world.addCollisionObject(&obj,
+                                 collisionFilterGroup,
+                                 collisionFilterMask);
+    }
+
+    static void
+    removeCollisionObject(btCollisionWorld& world,
+                          btCollisionObject& obj)
+    {
+        world.removeCollisionObject(&obj);
+    }
 };
 
 class LocalRayResultWrap
@@ -92,6 +146,71 @@ struct RayResultCallbackWrap
                        btCollisionObject& obj)
     {
         cb.m_collisionObject = &obj;
+    }
+};
+
+typedef boost::shared_ptr<btCollisionWorld::LocalConvexResult> LCRPtr;
+
+struct LocalConvexResultWrap
+{
+    static LCRPtr
+    init(const btCollisionObject&  hitCollisionObject,
+         btCollisionWorld::LocalShapeInfo& localShapeInfo,
+         const btVector3& hitNormalLocal,
+         const btVector3& hitPointLocal,
+         btScalar hitFraction)
+    {
+        return LCRPtr(
+            new btCollisionWorld::LocalConvexResult(
+                &hitCollisionObject,
+                &localShapeInfo,
+                hitNormalLocal,
+                hitPointLocal,
+                hitFraction
+            )
+        );
+    }
+
+    static const btCollisionObject&
+    getHitCollisionObject(btCollisionWorld::LocalConvexResult& result)
+    {
+        return *result.m_hitCollisionObject;
+    }
+
+    static void
+    setHitCollisionObject(btCollisionWorld::LocalConvexResult& result,
+                          btCollisionObject& obj)
+    {
+        result.m_hitCollisionObject = &obj;
+    }
+
+    static btCollisionWorld::LocalShapeInfo&
+    getLocalShapeInfo(btCollisionWorld::LocalConvexResult& result)
+    {
+        return *result.m_localShapeInfo;
+    }
+
+    static void
+    setLocalShapeInfo(btCollisionWorld::LocalConvexResult& result,
+                      btCollisionWorld::LocalShapeInfo& info)
+    {
+        result.m_localShapeInfo = &info;
+    }
+};
+
+struct ClosestConvexResultCallbackWrap
+{
+    static const btCollisionObject&
+    getHitCollisionObject(btCollisionWorld::ClosestConvexResultCallback& result)
+    {
+        return *result.m_hitCollisionObject;
+    }
+
+    static void
+    setHitCollisionObject(btCollisionWorld::ClosestConvexResultCallback& result,
+                          btCollisionObject& obj)
+    {
+        result.m_hitCollisionObject = &obj;
     }
 };
 

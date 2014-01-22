@@ -4,7 +4,7 @@
 
 #include <boost/python.hpp>
 #include <btBulletDynamicsCommon.h>
-#include "btBoostLinearMathPoolAllocator.hpp"
+#include <btBoost/LinearMath/PoolAllocator.hpp>
 
 using namespace boost::python;
 

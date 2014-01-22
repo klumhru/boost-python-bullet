@@ -1,12 +1,12 @@
-// File: btBoostDynamicsRigidBody.hpp
-#ifndef _btBoostDynamicsRigidBody_hpp
-#define _btBoostDynamicsRigidBody_hpp
+// File: RigidBody.hpp
+#ifndef _RigidBody_hpp
+#define _RigidBody_hpp
 
 #include <boost/python.hpp>
 #include <boost/shared_ptr.hpp>
 #include <btBulletDynamicsCommon.h>
 #include <btBulletCollisionCommon.h>
-#include "btBoostLinearMathAlignedObjectArray.hpp"
+#include <btBoost/LinearMath/AlignedObjectArray.hpp>
 
 using namespace boost::python;
 
@@ -463,4 +463,4 @@ void defineRigidBody()
     ;
 }
 
-#endif // _btBoostDynamicsRigidBody_hpp
+#endif // _RigidBody_hpp

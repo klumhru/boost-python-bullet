@@ -13,9 +13,9 @@
 #include <BulletCollision/CollisionShapes/btConvexPointCloudShape.h>
 #include <BulletCollision/CollisionShapes/btConvexPolyhedron.h>
 #include <boost/python.hpp>
-#include "array_helpers.hpp"
-#include "btBoostLinearMathAlignedObjectArray.hpp"
-#include "btBoostLinearMathVector3.hpp"
+#include <btBoost/array_helpers.hpp>
+#include <btBoost/LinearMath/AlignedObjectArray.hpp>
+#include <btBoost/LinearMath/Vector3.hpp>
 
 using namespace boost::python;
 

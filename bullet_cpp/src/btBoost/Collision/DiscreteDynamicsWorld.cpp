@@ -1,5 +1,27 @@
 #include "DiscreteDynamicsWorld.hpp"
 
+const btBroadphaseInterface*
+    (btCollisionWorld::*btCollisionWorld_getBroadphase_const)() const
+    = &btCollisionWorld::getBroadphase;
+btBroadphaseInterface*
+    (btCollisionWorld::*btCollisionWorld_getBroadphase)()
+    = &btCollisionWorld::getBroadphase;
+
+const btDispatcher*
+    (btCollisionWorld::*btCollisionWorld_getDispatcher_const)() const
+    = &btCollisionWorld::getDispatcher;
+btDispatcher*
+    (btCollisionWorld::*btCollisionWorld_getDispatcher)()
+    = &btCollisionWorld::getDispatcher;
+
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(ddw_step_overloads,
+                                       stepSimulation,
+                                       1, 3);
+
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(ddw_addCollisionObject_overloads,
+                                       addCollisionObject,
+                                       1, 3);
+
 void defineDiscreteDynamicsWorld()
 {
     class_<btCollisionWorld::LocalShapeInfo>("LocalShapeInfo")

@@ -5,7 +5,7 @@
 #include <boost/python.hpp>
 #include <boost/shared_ptr.hpp>
 #include <btBulletDynamicsCommon.h>
-#include "btBoostCollisionWorldWrappers.hpp"
+#include "CollisionWorldWrappers.hpp"
 
 // Very thin wrappers for data interchange classes and callbacks
 // TODO: Implement the wrappers fully

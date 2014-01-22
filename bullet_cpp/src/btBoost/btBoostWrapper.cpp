@@ -8,6 +8,7 @@
 #include <boost/python.hpp>
 #include <btBoost/btBoostLinearMath.hpp>
 #include <btBoost/btBoostDynamics.hpp>
+#include <btBoost/btBoostCollision.hpp>
 #include <btBoost/btBoostHello.hpp>
 
 using namespace boost::python;
@@ -16,6 +17,7 @@ BOOST_PYTHON_MODULE(bullet)
 {
     defineHello();
     defineLinearMath();
+    defineCollision();
     defineDynamics();
 }
 

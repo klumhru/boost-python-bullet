@@ -6,10 +6,8 @@
 #include "btBoostDynamicsDefaultCollisionConfiguration.hpp"
 #include "btBoostDynamicsCollisionDispatcher.hpp"
 #include "btBoostDynamicsSequentialImpulseConstraintSolver.hpp"
-#include "btBoostDynamicsDiscreteDynamicsWorld.hpp"
 #include "btBoostDynamicsShapes.hpp"
 #include "btBoostDynamicsRigidBody.hpp"
-#include "btBoostCollisionOverLappingPairCache.hpp"
 
 void defineDynamics()
 {
@@ -17,10 +15,8 @@ void defineDynamics()
     defineDefaultCollisionConfiguration();
     defineCollisionDispatcher();
     defineSequentialImpulseConstraintSolver();
-    defineDiscreteDynamicsWorld();
     defineShapes();
     defineRigidBody();
-    defineOverlappingPairCaches();
 }
 
 #endif // _btBoostDynamics_hpp

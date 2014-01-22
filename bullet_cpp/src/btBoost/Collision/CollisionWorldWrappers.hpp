@@ -1,6 +1,6 @@
-// File: btBoostCollisionWorldWrappers.hpp
-#ifndef _btBoostCollisionWorldWrappers_hpp
-#define _btBoostCollisionWorldWrappers_hpp
+// File: CollisionWorldWrappers.hpp
+#ifndef _CollisionWorldWrappers_hpp
+#define _CollisionWorldWrappers_hpp
 
 #include <boost/python.hpp>
 #include <boost/shared_ptr.hpp>
@@ -147,4 +147,4 @@ public:
 };
 
 
-#endif // _btBoostCollisionWorldWrappers_hpp
+#endif // _CollisionWorldWrappers_hpp

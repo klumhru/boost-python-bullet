@@ -8,19 +8,18 @@
 
 using namespace boost::python;
 
-typedef boost::shared_ptr<btCollisionWorld> btColWorldPtr;
-typedef boost::shared_ptr<btDiscreteDynamicsWorld> btDdwPtr;
-typedef boost::shared_ptr<btCollisionWorld::LocalRayResult> btLocalRayResPtr;
+typedef boost::shared_ptr<btCollisionWorld> btCollisionWorldPtr;
+typedef boost::shared_ptr<btCollisionWorld::LocalRayResult> LocalRayResultPtr;
 
 class btCollisionWorldWrap
 {
 public:
-    static btColWorldPtr
+    static btCollisionWorldPtr
     init(btDispatcher& dispatcher,
          btBroadphaseInterface& pairCache,
          btCollisionConfiguration& config)
     {
-        return btColWorldPtr(new btCollisionWorld(&dispatcher,
+        return btCollisionWorldPtr(new btCollisionWorld(&dispatcher,
                                                   &pairCache,
                                                   &config));
     }
@@ -97,13 +96,13 @@ public:
 class LocalRayResultWrap
 {
 public:
-    static btLocalRayResPtr
+    static LocalRayResultPtr
     init(const btCollisionObject& collisionObject,
          btCollisionWorld::LocalShapeInfo& localShapeInfo,
          const btVector3& hitNormalLocal,
          btScalar hitFraction)
     {
-        return btLocalRayResPtr(new btCollisionWorld::LocalRayResult(
+        return LocalRayResultPtr(new btCollisionWorld::LocalRayResult(
                                 &collisionObject,
                                 &localShapeInfo,
                                 hitNormalLocal,
@@ -213,57 +212,5 @@ struct ClosestConvexResultCallbackWrap
         result.m_hitCollisionObject = &obj;
     }
 };
-
-class btDiscreteDynamicsWorldWrap
-{
-public:
-    static btColWorldPtr
-    init(btDispatcher& dispatcher,
-         btBroadphaseInterface& pairCache,
-         btConstraintSolver& solver,
-         btCollisionConfiguration& config)
-    {
-        return btDdwPtr(new btDiscreteDynamicsWorld(&dispatcher,
-                                                    &pairCache,
-                                                    &solver,
-                                                    &config));
-    }
-
-    static void
-    addCollisionObject(btDiscreteDynamicsWorld& world,
-                       btCollisionObject& object)
-    {
-        world.addCollisionObject(&object);
-    }
-
-    static void
-    removeCollisionObject(btDiscreteDynamicsWorld& world,
-                          btCollisionObject& object)
-    {
-        world.removeCollisionObject(&object);
-    }
-
-    static void
-    addRigidBody(btDiscreteDynamicsWorld& world,
-                 btRigidBody& body)
-    {
-        world.addRigidBody(&body);
-    }
-
-    static void
-    removeRigidBody(btDiscreteDynamicsWorld& world,
-                    btRigidBody& body)
-    {
-        world.removeRigidBody(&body);
-    }
-
-    static void
-    setConstraintSolver(btDiscreteDynamicsWorld& world,
-                        btConstraintSolver& solver)
-    {
-        world.setConstraintSolver(&solver);
-    }
-};
-
 
 #endif // _CollisionWorldWrappers_hpp

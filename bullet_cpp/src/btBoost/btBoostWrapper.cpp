@@ -10,12 +10,14 @@
 #include <btBoost/btBoostDynamics.hpp>
 #include <btBoost/btBoostCollision.hpp>
 #include <btBoost/btBoostHello.hpp>
+#include <btBoost/TypedObject.hpp>
 
 using namespace boost::python;
 
 BOOST_PYTHON_MODULE(bullet)
 {
     defineHello();
+    defineTypedObject();
     defineLinearMath();
     defineCollision();
     defineDynamics();

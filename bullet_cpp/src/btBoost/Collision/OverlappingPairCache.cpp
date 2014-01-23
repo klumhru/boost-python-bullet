@@ -1,9 +1,9 @@
 #include "OverlappingPairCache.hpp"
 
 #include <boost/python.hpp>
-#include <boost/shared_ptr.hpp>
 #include <btBulletDynamicsCommon.h>
-#include <btBoost/Collision/CollisionWorldWrappers.hpp>
+
+using namespace boost::python;
 
 
 void defineOverlappingPairCaches()

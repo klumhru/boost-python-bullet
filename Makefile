@@ -9,8 +9,13 @@ test:
 build:
 	python setup.py build
 
+clean:
+	python setup.py clean
+
+rebuild: clean force-build install test
+
 force-build:
-	python setup.py build --force
+	python setup.py build --force -j
 
 install:
 	python setup.py install

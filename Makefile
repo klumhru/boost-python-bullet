@@ -3,8 +3,8 @@ CC="ccache gcc"
 all: build install
 
 test:
-	nosetests test_linear_math
-	nosetests test_collision
+	nosetests ${NOSE_FLAGS} test_linear_math
+	nosetests ${NOSE_FLAGS} test_collision
 
 build:
 	python setup.py build

@@ -4,23 +4,27 @@
 
 #include <boost/python.hpp>
 #include <boost/shared_ptr.hpp>
+#include <btBulletCollisionCommon.h>
 #include <btBulletDynamicsCommon.h>
+#include <BulletDynamics/Dynamics/btDiscreteDynamicsWorld.h>
 
-typedef boost::shared_ptr<btDiscreteDynamicsWorld> btDdwPtr;
+typedef boost::shared_ptr<btDiscreteDynamicsWorld> DiscreteDynamicsWorldPtr;
 
-class btDiscreteDynamicsWorldWrap
+class DiscreteDynamicsWorldWrap
 {
 public:
-    static btDdwPtr
+    static DiscreteDynamicsWorldPtr
     init(btDispatcher& dispatcher,
          btBroadphaseInterface& pairCache,
          btConstraintSolver& solver,
          btCollisionConfiguration& config)
     {
-        return btDdwPtr(new btDiscreteDynamicsWorld(&dispatcher,
-                                                    &pairCache,
-                                                    &solver,
-                                                    &config));
+        return DiscreteDynamicsWorldPtr(
+            new btDiscreteDynamicsWorld(&dispatcher,
+                                        &pairCache,
+                                        &solver,
+                                        &config)
+        );
     }
 
     static void
@@ -56,6 +60,25 @@ public:
                         btConstraintSolver& solver)
     {
         world.setConstraintSolver(&solver);
+    }
+
+    static void
+    synchronizeSingleMotionState(btDiscreteDynamicsWorld& world,
+                                 btRigidBody& body)
+    {
+        world.synchronizeSingleMotionState(&body);
+    }
+
+    static btSimulationIslandManager&
+    getSimulationIslandManager(btDiscreteDynamicsWorld& world)
+    {
+        return *world.getSimulationIslandManager();
+    }
+
+    static btCollisionWorld&
+    getCollisionWorld(btDiscreteDynamicsWorld& world)
+    {
+        return *world.getCollisionWorld();
     }
 };
 

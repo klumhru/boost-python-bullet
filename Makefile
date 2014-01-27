@@ -5,6 +5,7 @@ all: build install
 test:
 	nosetests ${NOSE_FLAGS} test_linear_math
 	nosetests ${NOSE_FLAGS} test_collision
+	nosetests ${NOSE_FLAGS} test_hello
 
 build:
 	python setup.py build

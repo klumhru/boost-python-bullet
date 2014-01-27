@@ -33,14 +33,19 @@ void defineDynamicsWorld()
         .def("add_action",
              DynamicsWorldWrap::addAction,
              with_custodian_and_ward<1, 2>())
+        .def("set_gravity", &btDynamicsWorld::setGravity)
+        .def("get_gravity", &btDynamicsWorld::getGravity,
+             return_value_policy<return_by_value>())
         .add_property("gravity",
                       make_function(&btDynamicsWorld::getGravity,
                                     return_value_policy<return_by_value>()),
                       &btDynamicsWorld::setGravity)
-        .def("add_rigidbody",
+        .def("synchronize_motion_states",
+             &btDynamicsWorld::synchronizeMotionStates)
+        .def("add_rigid_body",
              DynamicsWorldWrap::addRigidBody,
              with_custodian_and_ward<1, 2>())
-        .def("add_rigidbody",
+        .def("add_rigid_body",
              DynamicsWorldWrap::addRigidBody_mask_group,
              with_custodian_and_ward<1, 2>())
         .def("remove_rigidbody",
@@ -59,9 +64,11 @@ void defineDynamicsWorld()
                       &btDynamicsWorld::getWorldType)
         .def("clear_forces",
              &btDynamicsWorld::clearForces)
-        // TODO: Fix segfault caused by the following property
-        /*.add_property("solver_info",
+        .add_property("solver_info",
                       make_function(&btDynamicsWorld::getSolverInfo,
-                                    return_internal_reference<>()))*/
+                                    return_internal_reference<>()))
+
+        // Not wrapped since addAction replaces them:
+        // addVehicle, removeVehicle, addCharacter, removeCharacter
     ;
 }

@@ -173,21 +173,23 @@ void defineCollisionWorld()
 
     class_<btCollisionWorld, boost::noncopyable>
         ("btCollisionWorld", no_init)
-        .def("__init__", make_constructor(&btCollisionWorldWrap::init))
+        .def("__init__", make_constructor(&CollisionWorldWrap::init))
         .def("step_simulation", &btDiscreteDynamicsWorld::stepSimulation,
              stepSimulation_overloads())
         .add_property("broadphase",
                       make_function(btCollisionWorld_getBroadphase,
                                     return_internal_reference<>()),
-                      make_function(btCollisionWorldWrap::setBroadphase,
+                      make_function(CollisionWorldWrap::setBroadphase,
                                     with_custodian_and_ward<1, 2>()))
+        .def("get_dispatcher", btCollisionWorld_getDispatcher,
+             return_value_policy<reference_existing_object>())
         .add_property("dispatcher",
-                      make_function(btCollisionWorld_getDispatcher_const,
-                                    return_internal_reference<>()))
+                      make_function(CollisionWorldWrap::getDispatcher,
+                                    return_value_policy<reference_existing_object>()))
         .add_property("pair_cache",
                       make_function(&btCollisionWorld::getPairCache,
                                     return_internal_reference<>()))
-        .def("update_single_aabb", btCollisionWorldWrap::updateSingleAabb)
+        .def("update_single_aabb", CollisionWorldWrap::updateSingleAabb)
         .def("update_aabbs", &btCollisionWorld::updateAabbs)
         .def("compute_overlapping_pairs",
              &btCollisionWorld::computeOverlappingPairs)
@@ -203,18 +205,18 @@ void defineCollisionWorld()
              &btCollisionWorld::contactPairTest)
         // Internal functions are not wrapped for ray and object tests
         .def("ray_test_single",
-             &btCollisionWorldWrap::rayTestSingle)
+             &CollisionWorldWrap::rayTestSingle)
         .staticmethod("ray_test_single")
         .def("object_query_single",
-             &btCollisionWorldWrap::objectQuerySingle)
+             &CollisionWorldWrap::objectQuerySingle)
         .staticmethod("object_query_single")
         .def("add_collision_object",
-             btCollisionWorldWrap::addCollisionObject,
+             CollisionWorldWrap::addCollisionObject,
              with_custodian_and_ward<1, 2>())
         // TODO: implement overloads for addCollisionObject
         // TODO: implement getCollisionObjectArray
         .def("remove_collision_object",
-             btCollisionWorldWrap::removeCollisionObject)
+             CollisionWorldWrap::removeCollisionObject)
         .def("perform_discrete_collision_detection",
              &btCollisionWorld::performDiscreteCollisionDetection)
         .add_property("dispatch_info",

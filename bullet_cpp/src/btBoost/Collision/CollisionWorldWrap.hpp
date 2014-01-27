@@ -11,7 +11,7 @@ using namespace boost::python;
 typedef boost::shared_ptr<btCollisionWorld> btCollisionWorldPtr;
 typedef boost::shared_ptr<btCollisionWorld::LocalRayResult> LocalRayResultPtr;
 
-class btCollisionWorldWrap
+class CollisionWorldWrap
 {
 public:
     static btCollisionWorldPtr
@@ -90,6 +90,12 @@ public:
                           btCollisionObject& obj)
     {
         world.removeCollisionObject(&obj);
+    }
+
+    static btDispatcher&
+    getDispatcher(btCollisionWorld& world)
+    {
+      return *world.getDispatcher();
     }
 };
 

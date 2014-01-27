@@ -28,7 +28,7 @@ void defineDefaultCollisionConfiguration()
     ;
 
     class_<btDefaultCollisionConfiguration,
-           bases<btCollisionConfiguration> >("btDefaultCollisionConfiguration",
-                                     init<const btDefaultCollisionConstructionInfo&>())
+           bases<btCollisionConfiguration> >("btDefaultCollisionConfiguration")
+        .def(init<const btDefaultCollisionConstructionInfo&>())
     ;
 }

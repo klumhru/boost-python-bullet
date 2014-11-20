@@ -71,12 +71,25 @@ macros = [
     ('BT_USE_DOUBLE_PRECISION', '1'),
 ]
 
+# Choose the correct Python library to link with.
+major, minor = sys.version_info.major, sys.version_info.minor
+if major == 2:
+    # Python 2
+    libraries = ['boost_python']
+elif major == 3:
+    # Python 3
+    libraries = ['boost_python-py3{}'.format(minor)]
+else:
+    # Neither Python 2.x nor 3.x.
+    print('Python {}.x is not supported'.format(major))
+    sys.exit(1)
+del major, minor
 
 modules = [
     Extension(str('bullet'),  # hack for distutils string param in Extension
               sources=[s for s in find_sources(src_dirs)],
               define_macros=macros,
-              libraries=['boost_python'],
+              libraries=libraries,
               extra_compile_args=['-w'],
               include_dirs=include_dirs)
 ]

@@ -305,7 +305,9 @@ class ConvexTestCase(unittest.TestCase):
     def test_get_supporting_vertex(self):
         """Runtime tests only"""
         self.v2 = self.hull.local_get_supporting_vertex_without_margin(self.v1)
-        self.assertGreater(self.v1, self.v2)
+        self.assertGreater(self.v1.x, self.v2.x)
+        self.assertGreater(self.v1.y, self.v2.y)
+        self.assertGreater(self.v1.z, self.v2.z)
         self.v2 = self.hull.local_get_supporting_vertex_without_margin(self.v1)
         self.v3 = self.v2
         self.assertEquals(self.v2, bullet.btVector3(-1, -1, -1))

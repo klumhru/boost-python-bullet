@@ -34,7 +34,7 @@ The library has been built and tested on Linux (Ubuntu 12.04, 13.04, CentOS 5.1,
 
 You can run
 ```
-pip install -e git+git@github.com:Klumhru/boost-python-bullet.git#egg=boost-python-bullet
+pip install --install-option="-j" -e git+https://github.com/Klumhru/boost-python-bullet.git#egg=boost-python-bullet
 ```
 You can also download the current branch ```git clone git@github.com:Klumhru/boost-python-bullet.git``` and install by running ```python setup.py install.```
 
